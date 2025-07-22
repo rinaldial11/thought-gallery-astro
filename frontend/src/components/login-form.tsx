@@ -12,17 +12,24 @@ import tgIcon from "@/assets/icon/tg-icon.png";
 // import { useLogin } from "../hooks/use-login";
 import { useForm } from "react-hook-form";
 import type { ILoginReq } from "@/type/login-request";
+import { loginRequest } from "@/api-call/login";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const { register } = useForm<ILoginReq>();
-  // const { mutate, isPending } = useLogin();
+  const { register, handleSubmit } = useForm<ILoginReq>();
 
-  // const handleLogin = (loginForm: ILoginReq) => {
-  //   mutate(loginForm);
-  // };
+  const handleLogin = async (loginForm: ILoginReq) => {
+    try {
+      await loginRequest(loginForm);
+
+      console.log("login berhasil");
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  };
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -35,7 +42,7 @@ export function LoginForm({
           </CardDescription>
         </div>
         <CardContent>
-          <form>
+          <form onSubmit={handleSubmit(handleLogin)}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-3">
                 <Label htmlFor="email">Email</Label>
