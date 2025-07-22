@@ -1,0 +1,23 @@
+---
+import '../../styles/global.css';
+import EditorPage from '@/components/react-pages/editor';
+export function getStaticPaths() {
+  return [
+    { params: { slug: "new" }}
+  ]
+}
+const { slug } = Astro.params;
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Dashboard</title>
+	</head>
+	<body>
+		<EditorPage slug={slug} client:only />
+	</body>
+</html>

@@ -42,9 +42,7 @@ function DashboardPage() {
             onValueChange={(value) => setFilter(value as "draft" | "published")}
           >
             <TabsList>
-              {user.role.name === "editor" && (
-                <TabsTrigger value="draft">Draft</TabsTrigger>
-              )}
+              <TabsTrigger value="draft">Draft</TabsTrigger>
               <TabsTrigger value="published">Published</TabsTrigger>
             </TabsList>
             <TabsContent value="draft">
@@ -65,7 +63,14 @@ function DashboardPage() {
                           <CardHeader>
                             <CardTitle>{post.title}</CardTitle>
                             <CardDescription>
-                              Author: {post.author.first_name}
+                              Author:{" "}
+                              {post.author.first_name +
+                                post.author.last_name ===
+                              user.first_name + user.last_name
+                                ? "Me"
+                                : post.author.first_name +
+                                  " " +
+                                  post.author.last_name}
                             </CardDescription>
                           </CardHeader>
                           <CardContent className="h-35 overflow-hidden">
@@ -135,15 +140,13 @@ function DashboardPage() {
             </TabsContent>
           </Tabs>
         </div>
-        {user.role.name === "editor" && (
-          <Button
-            className="fixed bottom-15 right-15 rounded-full w-14 h-14 p-0 shadow-lg z-50"
-            variant="default"
-            onClick={() => (window.location.href = "/editor/new")}
-          >
-            <Plus className="w-6 h-6" />
-          </Button>
-        )}
+        <Button
+          className="fixed bottom-15 right-15 rounded-full w-14 h-14 p-0 shadow-lg z-50"
+          variant="default"
+          onClick={() => (window.location.href = "/editor/new")}
+        >
+          <Plus className="w-6 h-6" />
+        </Button>
       </SidebarInset>
     </SidebarProvider>
   );

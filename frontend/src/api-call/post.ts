@@ -1,5 +1,5 @@
 import { axiosInstance } from "@/lib/axios-instance";
-import type { IPost } from "@/type/post";
+import type { IPost, IPostRequest } from "@/type/post";
 
 export const getPosts = async (
   status: "published" | "draft" = "published",
@@ -7,16 +7,19 @@ export const getPosts = async (
 ) => {
   try {
     if (status === "draft") {
-      const res = await axiosInstance.get("/items/posts", {
-        params: {
-          filter: {
-            status: {
-              _eq: "draft",
+      const res = await axiosInstance.get(
+        "/items/posts?fields=*,author.first_name,author.last_name,author.email",
+        {
+          params: {
+            filter: {
+              status: {
+                _eq: "draft",
+              },
             },
           },
-        },
-        headers: { Authorization: `Bearer ${token}` },
-      });
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       return res.data?.data as IPost[];
     }
@@ -31,15 +34,18 @@ export const getPublicPost = async (
 ) => {
   try {
     if (status === "published") {
-      const res = await axiosInstance.get("/items/posts", {
-        params: {
-          filter: {
-            status: {
-              _eq: "published",
+      const res = await axiosInstance.get(
+        "/items/posts?fields=*,author.first_name,author.last_name,author.email",
+        {
+          params: {
+            filter: {
+              status: {
+                _eq: "published",
+              },
             },
           },
-        },
-      });
+        }
+      );
 
       return res.data?.data as IPost[];
     }
@@ -51,19 +57,22 @@ export const getPublicPost = async (
 
 export const getPublicPostBySlug = async (slug: string) => {
   try {
-    const res = await axiosInstance.get("/items/posts", {
-      params: {
-        filter: {
-          slug: {
-            _eq: slug,
+    const res = await axiosInstance.get(
+      "/items/posts?fields=*,author.first_name,author.last_name,author.email",
+      {
+        params: {
+          filter: {
+            slug: {
+              _eq: slug,
+            },
+            status: {
+              _eq: "published", // hanya tampilkan post yang published
+            },
           },
-          status: {
-            _eq: "published", // hanya tampilkan post yang published
-          },
+          limit: 1,
         },
-        limit: 1,
-      },
-    });
+      }
+    );
 
     return res.data?.data[0] as IPost;
   } catch (error) {
@@ -87,7 +96,7 @@ export const getPostById = async (posId: string, token: string) => {
   }
 };
 
-export const postPost = async (body: IPost, token: string) => {
+export const postPost = async (body: IPostRequest, token: string) => {
   try {
     await axiosInstance.post("/items/posts", body, {
       headers: {
@@ -101,7 +110,7 @@ export const postPost = async (body: IPost, token: string) => {
 };
 
 export const updatePost = async (
-  body: IPost,
+  body: IPostRequest,
   token: string,
   postId: string
 ) => {

@@ -17,3 +17,17 @@ export interface IPost {
   seo_desc: string;
   version?: number;
 }
+
+export interface IPostRequest {
+  id?: string;
+  status: "published" | "draft";
+  author: string;
+  created_at?: string; // ISO timestamp
+  updated_at?: string | null;
+  title: string;
+  body: string;
+  slug?: string;
+  seo_title: string;
+  seo_desc: string;
+  version?: number;
+}

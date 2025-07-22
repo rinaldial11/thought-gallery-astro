@@ -8,7 +8,7 @@ import {
 } from "@/api-call/post";
 import { useAtom } from "jotai/react";
 import { tokenAtom } from "@/store/token";
-import type { IPost } from "@/type/post";
+import type { IPost, IPostRequest } from "@/type/post";
 import { showToast } from "@/components/toaster";
 import { useEffect, useState } from "react";
 
@@ -117,7 +117,7 @@ export const useGetPostById = (postId: string) => {
 export const useSubmitPosts = () => {
   const [token] = useAtom(tokenAtom);
 
-  const submitPost = async (body: IPost, postId: string) => {
+  const submitPost = async (body: IPostRequest, postId: string) => {
     try {
       if (!token.access_token) {
         showToast("Session Expired", "No access token available", "error");

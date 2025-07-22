@@ -17,7 +17,6 @@ import { PowerOff } from "lucide-react";
 import { useLogout } from "@/hooks/use-logout";
 import { useAtom } from "jotai";
 import { tokenAtom } from "@/store/token";
-import { Button } from "./ui/button";
 
 const data = {
   navMain: [
@@ -65,24 +64,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarGroup>
         ))}
       </SidebarContent>
-      {token.access_token ? (
-        <div
-          onClick={logout}
-          className="mb-10 text-base font-medium text-red-500 px-4 flex items-center gap-2 cursor-pointer hover:bg-gray-100"
-        >
-          <PowerOff size={15} />
-          Sign out
-        </div>
-      ) : (
-        <>
-          <Button
-            onClick={() => (window.location.href = "/login")}
-            className="mb-10 mx-5"
-          >
-            Sign In
-          </Button>
-        </>
-      )}
+      <div
+        onClick={logout}
+        className="mb-10 text-base font-medium text-red-500 px-4 flex items-center gap-2 cursor-pointer hover:bg-gray-100"
+      >
+        <PowerOff size={15} />
+        Sign out
+      </div>
       <SidebarRail />
     </Sidebar>
   );
