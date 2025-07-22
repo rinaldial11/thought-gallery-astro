@@ -1,0 +1,139 @@
+import {
+  getPostById,
+  getPosts,
+  getPublicPost,
+  getPublicPostBySlug,
+  postPost,
+  updatePost,
+} from "@/api-call/post";
+import { useAtom } from "jotai/react";
+import { tokenAtom } from "@/store/token";
+import type { IPost } from "@/type/post";
+import { showToast } from "@/components/toaster";
+import { useEffect, useState } from "react";
+
+export const useGetPosts = (status: "published" | "draft" = "published") => {
+  const [token] = useAtom(tokenAtom);
+  const [posts, setPosts] = useState<IPost[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    if (!token?.access_token) return;
+
+    const fetchData = async () => {
+      try {
+        const data = await getPosts(status, token.access_token ?? "");
+        setPosts(data ?? []);
+      } catch (err) {
+        setError(err as Error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [status, token]);
+
+  return { posts, loading, error };
+};
+
+export const useGetPublicPosts = (
+  status: "published" | "draft" = "published"
+) => {
+  const [publicPosts, setPublicPosts] = useState<IPost[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const posts = await getPublicPost(status);
+        setPublicPosts(posts ?? []);
+      } catch (err) {
+        setError(err as Error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [status]);
+
+  return { publicPosts, isLoading, error };
+};
+
+export const useGetPublicPostBySlug = (slug: string) => {
+  const [publicPost, setPublicPost] = useState<IPost | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    if (!slug) return;
+
+    const fetchPost = async () => {
+      try {
+        const data = await getPublicPostBySlug(slug);
+        setPublicPost(data ?? null);
+      } catch (err) {
+        setError(err as Error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPost();
+  }, [slug]);
+
+  return { publicPost, isLoading, error };
+};
+
+export const useGetPostById = (postId: string) => {
+  const [postById, setPostById] = useState<IPost | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+  const [token] = useAtom(tokenAtom);
+
+  useEffect(() => {
+    if (!postId || !token.access_token) return;
+
+    const fetchPost = async () => {
+      try {
+        const data = await getPostById(postId, token.access_token ?? "");
+        setPostById(data ?? null);
+      } catch (err) {
+        setError(err as Error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPost();
+  }, [postId, token.access_token]);
+
+  return { postById, isLoading, error };
+};
+
+export const useSubmitPosts = () => {
+  const [token] = useAtom(tokenAtom);
+
+  const submitPost = async (body: IPost, postId: string) => {
+    try {
+      if (!token.access_token) {
+        showToast("Session Expired", "No access token available", "error");
+        throw new Error("No access token available");
+      }
+
+      if (postId === "new") {
+        await postPost(body, token.access_token);
+      } else {
+        await updatePost(body, token.access_token, postId);
+      }
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  };
+
+  return { submitPost };
+};

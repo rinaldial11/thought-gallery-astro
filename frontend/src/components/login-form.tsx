@@ -9,22 +9,20 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import tgIcon from "@/assets/icon/tg-icon.png";
-// import { useLogin } from "../hooks/use-login";
 import { useForm } from "react-hook-form";
 import type { ILoginReq } from "@/type/login-request";
-import { loginRequest } from "@/api-call/login";
+import { useLoginRequest } from "@/hooks/use-login";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
   const { register, handleSubmit } = useForm<ILoginReq>();
+  const { loginSubmit } = useLoginRequest();
 
   const handleLogin = async (loginForm: ILoginReq) => {
     try {
-      await loginRequest(loginForm);
-
-      console.log("login berhasil");
+      await loginSubmit(loginForm);
     } catch (error) {
       console.log(error);
       throw error;
