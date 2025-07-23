@@ -10,9 +10,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useForm } from "react-hook-form";
 import type { ILoginReq } from "@/type/login-request";
-import { useLoginRequest } from "@/hooks/use-login";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginSchema } from "@/schema-validation/login-schema";
+import { showToast } from "./toaster";
+import { useEffect } from "react";
 
 export function LoginForm({
   className,
@@ -20,21 +21,43 @@ export function LoginForm({
 }: React.ComponentProps<"div">) {
   const {
     register,
-    // handleSubmit,
+    handleSubmit,
     formState: { errors },
   } = useForm<ILoginReq>({
     resolver: yupResolver(loginSchema),
   });
-  const { isLoading } = useLoginRequest();
+  // const [, setUser] = useAtom(userAtom);
+  const onSubmit = async (data: ILoginReq) => {
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        body: new URLSearchParams(Object.entries(data)),
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      });
 
-  // const handleLogin = async (loginForm: ILoginReq) => {
-  //   try {
-  //     await loginSubmit(loginForm);
-  //   } catch (error) {
-  //     console.log(error);
-  //     throw error;
-  //   }
-  // };
+      if (!res.ok) {
+        showToast("Login Gagal", "Email atau password salah", "error");
+        return;
+      }
+
+      showToast(
+        "Login Berhasil",
+        "Anda akan dialihkan ke halaman berikutnya",
+        "success"
+      );
+      setTimeout(() => {
+        window.location.href = "/dashboard";
+      }, 500);
+    } catch (error) {
+      showToast("Login Gagal", "Email atau password salah", "error");
+    }
+  };
+
+  useEffect(() => {
+    localStorage.clear();
+  }, []);
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -63,7 +86,8 @@ export function LoginForm({
         </div>
         <CardContent>
           <form
-            action="/api/auth/login"
+            // action="/api/auth/login"
+            onSubmit={handleSubmit(onSubmit)}
             method="POST"
             // onSubmit={handleSubmit(handleLogin)}
           >
@@ -106,11 +130,12 @@ export function LoginForm({
               </div>
               <div className="flex flex-col gap-3">
                 <Button
-                  disabled={isLoading}
+                  // disabled={isLoading}
                   type="submit"
                   className="w-full bg-blue-600"
                 >
-                  {isLoading ? "Logging in..." : "Login"}
+                  {/* {isLoading ? "Logging in..." : "Login"} */}
+                  Login
                 </Button>
               </div>
               <a href="/" className="underline text-end text-sm">

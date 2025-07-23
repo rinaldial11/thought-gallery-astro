@@ -5,7 +5,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { useGetPosts, useGetPublicPosts } from "@/hooks/use-post";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Card,
@@ -18,26 +18,40 @@ import {
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useAtom } from "jotai";
-import { userAtom } from "@/store/user";
+import { directuseUserAtom } from "@/store/user";
 import { Input } from "../ui/input";
 import { useDebounce } from "@/hooks/use-debounce";
 import { Switch } from "../ui/switch";
 import { Label } from "../ui/label";
 import { marked } from "marked";
+import type { DirectusUser } from "@/type/user";
+import { directusTokenAtom } from "@/store/token";
 
-function DashboardPage() {
+function DashboardPage({ user, token }: { user: DirectusUser; token: string }) {
   const [filter, setFilter] = useState<"published" | "draft">("published");
-  const [user] = useAtom(userAtom);
+  const [, setUser] = useAtom(directuseUserAtom);
+  const [, setToken] = useAtom(directusTokenAtom);
   const [title, setTitle] = useState("");
   const [createdBy, setCreatedBy] = useState(false);
   const debouncetitle = useDebounce(title, 500);
-  const { posts } = useGetPosts(filter, debouncetitle, createdBy, user.id);
+  const { posts } = useGetPosts(
+    filter,
+    debouncetitle,
+    createdBy,
+    user.id,
+    token
+  );
   const { publicPosts } = useGetPublicPosts(
     filter,
     debouncetitle,
     createdBy,
     user.id
   );
+
+  useEffect(() => {
+    setUser(user);
+    setToken(token);
+  }, []);
 
   return (
     <SidebarProvider>

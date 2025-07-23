@@ -11,32 +11,23 @@ import { tokenAtom } from "@/store/token";
 import type { IPost, IPostRequest } from "@/type/post";
 import { showToast } from "@/components/toaster";
 import { useEffect, useState } from "react";
-import { useRefreshToken } from "./use-refresh-token";
 
 export const useGetPosts = (
   status: "published" | "draft" = "published",
   title: string,
   createdBy: boolean,
-  userId: string
+  userId: string,
+  token: string
 ) => {
   // const [token] = useAtom(tokenAtom);
   const [posts, setPosts] = useState<IPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
-  const { token } = useRefreshToken();
 
   useEffect(() => {
-    if (!token?.access_token) return;
-
     const fetchData = async () => {
       try {
-        const data = await getPosts(
-          status,
-          token.access_token ?? "",
-          title,
-          createdBy,
-          userId
-        );
+        const data = await getPosts(status, token, title, createdBy, userId);
         setPosts(data ?? []);
       } catch (err) {
         setError(err as Error);
@@ -46,7 +37,7 @@ export const useGetPosts = (
     };
 
     fetchData();
-  }, [status, token, title, createdBy, userId]);
+  }, [status, title, createdBy, userId]);
 
   return { posts, loading, error };
 };

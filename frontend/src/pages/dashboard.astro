@@ -2,6 +2,15 @@
 import DashboardPage from "@/components/react-pages/dashboard"
 import '../styles/global.css';
 import BaseLayout from "@/layouts/base-layout.astro";
+import { getUser } from "@/api-call/user";
+
+const token = Astro.cookies.get("directus_session_token")
+
+if (!token?.value) {
+	return Astro.redirect("/login")
+}
+
+const user = await getUser()
 ---
 
 <html lang="en">
@@ -14,7 +23,7 @@ import BaseLayout from "@/layouts/base-layout.astro";
 	</head>
 	<BaseLayout>
 		<body>
-			<DashboardPage client:load />
+			<DashboardPage token={token?.value ?? ""} user={user} client:load />
 		</body>
 	</BaseLayout>
 </html>
