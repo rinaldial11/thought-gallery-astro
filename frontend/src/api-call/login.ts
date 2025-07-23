@@ -1,11 +1,11 @@
-import { axiosInstance } from "@/lib/axios-instance";
 import type { ILoginReq } from "../type/login-request";
 import type { IToken } from "@/type/token";
 import { showToast } from "@/components/toaster";
+import { directus } from "@/lib/directus-instance";
 
 export const loginRequest = async (body: ILoginReq) => {
   try {
-    const res = await axiosInstance.post("/auth/login", body);
+    const res = await directus.login(body);
 
     showToast(
       "Login Success",
@@ -13,7 +13,12 @@ export const loginRequest = async (body: ILoginReq) => {
       "success"
     );
 
-    return res.data?.data as IToken;
+    return {
+      access_token: res.access_token,
+      expires: res.expires,
+      expires_at: res.expires_at,
+      refresh_token: res.refresh_token,
+    } as IToken;
   } catch (error) {
     console.log(error);
     throw error;

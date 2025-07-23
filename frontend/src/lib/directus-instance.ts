@@ -1,6 +1,6 @@
 import { DIRECTUS_URL } from "@/constants/url";
 import type { IPost } from "@/type/post";
-import { createDirectus, rest } from "@directus/sdk";
+import { authentication, createDirectus, rest } from "@directus/sdk";
 
 interface Global {
   title: string;
@@ -23,4 +23,6 @@ type Schema = {
   pages: Page[];
 };
 
-export const directus = createDirectus<Schema>(DIRECTUS_URL).with(rest());
+export const directus = createDirectus<Schema>(DIRECTUS_URL)
+  .with(rest())
+  .with(authentication("cookie", { credentials: "include" }));

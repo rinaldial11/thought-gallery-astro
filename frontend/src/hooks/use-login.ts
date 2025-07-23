@@ -14,7 +14,12 @@ export const useLoginRequest = () => {
     try {
       const res = await loginRequest(body);
 
-      setToken(res);
+      setToken({
+        access_token: res.access_token,
+        expires: res.expires,
+        expires_at: res.expires_at,
+        refresh_token: res.refresh_token,
+      });
 
       try {
         const user = await getUser(res.access_token ?? "");
