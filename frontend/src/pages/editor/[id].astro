@@ -3,7 +3,18 @@ export const prerender = false;
 import BaseLayout from '@/layouts/base-layout.astro';
 import '../../styles/global.css';
 import EditorPage from '@/components/react-pages/editor';
+import { directus } from '@/lib/directus-instance';
+import { readItem } from '@directus/sdk';
+import type { IPost } from '@/type/post';
 const { id } = Astro.params;
+
+const token = Astro.cookies.get("directus_session_token")?.value;
+
+if (!token) {
+  return Astro.redirect("/login");
+}
+
+const post = await directus.request(readItem("posts", id ?? ""));
 ---
 
 <html lang="en">
@@ -16,7 +27,7 @@ const { id } = Astro.params;
 	</head>
 	<BaseLayout>
 	<body>
-		<EditorPage id={id ?? ""} client:only />
+		<EditorPage id={id ?? ""} draftedPost={post as IPost} client:only />
 	</body>
 	</BaseLayout>
 </html>

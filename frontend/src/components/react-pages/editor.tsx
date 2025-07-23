@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import Editor from "@uiw/react-md-editor";
 import { Input } from "@/components/ui/input";
-import { useGetPostById, useSubmitPosts } from "@/hooks/use-post";
+import { useSubmitPosts } from "@/hooks/use-post";
 import { useAtom } from "jotai";
 import { userAtom } from "@/store/user";
 import { showToast } from "@/components/toaster";
@@ -11,9 +11,10 @@ import { ArrowLeft } from "lucide-react";
 import { generateSlug, getSeoDesc } from "@/lib/seo-generator";
 import type { Socket } from "socket.io-client";
 import { socket } from "@/lib/socket-io-client";
+import type { IPost } from "@/type/post";
 
-function EditorPage({ id }: { id: string }) {
-  const { postById: draftedPost } = useGetPostById(id ?? "");
+function EditorPage({ id, draftedPost }: { id: string; draftedPost: IPost }) {
+  // const { postById: draftedPost } = useGetPostById(id ?? "");
   const [value, setValue] = useState<string>("# Enter your thought here!");
   const socketRef = useRef<Socket | null>(null);
   const [title, setTitle] = useState<string>("");

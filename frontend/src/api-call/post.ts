@@ -93,7 +93,7 @@ export const getPublicPostBySlug = async (slug: string) => {
               _eq: slug,
             },
             status: {
-              _eq: "published", // hanya tampilkan post yang published
+              _eq: "published",
             },
           },
           limit: 1,
