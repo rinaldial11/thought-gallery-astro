@@ -10,8 +10,8 @@ import { showToast } from "@/components/toaster";
 import { ArrowLeft } from "lucide-react";
 import { generateSlug, getSeoDesc } from "@/lib/seo-generator";
 
-function EditorPage({ slug }: { slug: string }) {
-  const { postById: draftedPost } = useGetPostById(slug ?? "");
+function EditorPage({ id }: { id: string }) {
+  const { postById: draftedPost } = useGetPostById(id ?? "");
   const [value, setValue] = useState<string>("# Enter your thought here!");
   const [title, setTitle] = useState<string>("");
   const [otherEditors] = useState<number>(0);
@@ -30,7 +30,7 @@ function EditorPage({ slug }: { slug: string }) {
           status: "draft",
           title,
         },
-        slug ?? ""
+        id ?? ""
       );
 
       showToast("Draft Saved", "Your draft has been saved!", "success");
@@ -53,7 +53,7 @@ function EditorPage({ slug }: { slug: string }) {
           status: "published",
           title,
         },
-        slug ?? ""
+        id ?? ""
       );
 
       showToast(
@@ -69,11 +69,11 @@ function EditorPage({ slug }: { slug: string }) {
   };
 
   useEffect(() => {
-    if (slug !== "new") {
+    if (id !== "new") {
       setValue(draftedPost?.body ?? "");
       setTitle(draftedPost?.title ?? "");
     }
-  }, [draftedPost?.body, slug]); //eslint-disable-line
+  }, [draftedPost?.body, id]); //eslint-disable-line
 
   return (
     <>
@@ -84,7 +84,7 @@ function EditorPage({ slug }: { slug: string }) {
             {otherEditors} editor(s) online
           </span>
         </div>
-        {slug === "new" ? (
+        {id === "new" ? (
           <>
             <div className="flex flex-col gap-8" style={{ padding: "2rem" }}>
               <Input

@@ -113,7 +113,14 @@ function DashboardPage() {
                           <CardHeader>
                             <CardTitle>{post.title}</CardTitle>
                             <CardDescription>
-                              Author: {post.author.first_name}
+                              Author:{" "}
+                              {post.author.first_name +
+                                post.author.last_name ===
+                              user.first_name + user.last_name
+                                ? "Me"
+                                : post.author.first_name +
+                                  " " +
+                                  post.author.last_name}
                             </CardDescription>
                           </CardHeader>
                           <CardContent className="h-35 overflow-hidden">
