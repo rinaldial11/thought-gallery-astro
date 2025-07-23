@@ -20,6 +20,34 @@ function EditorPage({ id }: { id: string }) {
 
   const handleDraftSubmit = async () => {
     try {
+      if (title.trim().length < 3) {
+        showToast(
+          "Submit Gagal!",
+          "Judul harus lebih dari 3 karakter",
+          "error"
+        );
+        return;
+      }
+      if (value.trim().length < 10) {
+        showToast(
+          "Submit Gagal!",
+          "Kontent harus lebih dari 10 karakter",
+          "error"
+        );
+        return;
+      }
+
+      const slug = generateSlug(title);
+
+      if (!slug) {
+        showToast(
+          "Submit Gagal!",
+          "Slug tidak valid. Coba ubah judul.",
+          "error"
+        );
+        return;
+      }
+
       await submitPost(
         {
           body: value,
@@ -43,6 +71,34 @@ function EditorPage({ id }: { id: string }) {
 
   const handlePublishSubmit = async () => {
     try {
+      if (title.trim().length < 3) {
+        showToast(
+          "Submit Gagal!",
+          "Judul harus lebih dari 3 karakter",
+          "error"
+        );
+        return;
+      }
+      if (value.trim().length < 10) {
+        showToast(
+          "Submit Gagal!",
+          "Kontent harus lebih dari 10 karakter",
+          "error"
+        );
+        return;
+      }
+
+      const slug = generateSlug(title);
+
+      if (!slug) {
+        showToast(
+          "Submit Gagal!",
+          "Slug tidak valid. Coba ubah judul.",
+          "error"
+        );
+        return;
+      }
+
       await submitPost(
         {
           body: value,

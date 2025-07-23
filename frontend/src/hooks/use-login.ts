@@ -5,10 +5,12 @@ import { tokenAtom } from "@/store/token";
 import { userAtom } from "@/store/user";
 import type { ILoginReq } from "@/type/login-request";
 import { useAtom } from "jotai/react";
+// import { useNavigate } from "react-router";
 
 export const useLoginRequest = () => {
   const [, setToken] = useAtom(tokenAtom);
   const [, setUser] = useAtom(userAtom);
+  // const navigate = useNavigate();
 
   const loginSubmit = async (body: ILoginReq) => {
     try {
@@ -28,7 +30,8 @@ export const useLoginRequest = () => {
         console.error("Failed to fetch user after login:", error);
       }
 
-      window.location.href = "/dashboard";
+      // navigate("/dashboard");
+      window.location.href = "dashboard";
     } catch (error) {
       showToast("Login Failed", "Email atau password salah", "error");
       console.log(error);

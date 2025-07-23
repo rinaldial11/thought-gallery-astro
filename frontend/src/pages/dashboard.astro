@@ -1,6 +1,7 @@
 ---
 import DashboardPage from "@/components/react-pages/dashboard"
 import '../styles/global.css';
+import BaseLayout from "@/layouts/base-layout.astro";
 ---
 
 <html lang="en">
@@ -11,7 +12,9 @@ import '../styles/global.css';
 		<meta name="generator" content={Astro.generator} />
 		<title>Dashboard</title>
 	</head>
-	<body>
-		<DashboardPage client:load />
-	</body>
+	<BaseLayout>
+		<body>
+			<DashboardPage client:load />
+		</body>
+	</BaseLayout>
 </html>

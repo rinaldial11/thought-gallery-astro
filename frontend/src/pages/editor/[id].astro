@@ -1,5 +1,6 @@
 ---
 export const prerender = false;
+import BaseLayout from '@/layouts/base-layout.astro';
 import '../../styles/global.css';
 import EditorPage from '@/components/react-pages/editor';
 const { id } = Astro.params;
@@ -13,7 +14,9 @@ const { id } = Astro.params;
 		<meta name="generator" content={Astro.generator} />
 		<title>Dashboard</title>
 	</head>
+	<BaseLayout>
 	<body>
 		<EditorPage id={id ?? ""} client:only />
 	</body>
+	</BaseLayout>
 </html>

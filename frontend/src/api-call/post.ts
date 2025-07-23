@@ -1,3 +1,4 @@
+import { showToast } from "@/components/toaster";
 import { axiosInstance } from "@/lib/axios-instance";
 import type { IPost, IPostRequest } from "@/type/post";
 
@@ -104,6 +105,7 @@ export const postPost = async (body: IPostRequest, token: string) => {
       },
     });
   } catch (error) {
+    showToast("Judul sudah ada", "Silahkan pakai judul lain", "error");
     console.log(error);
     throw error;
   }
@@ -121,6 +123,7 @@ export const updatePost = async (
       },
     });
   } catch (error) {
+    showToast("Judul sudah ada", "Silahkan pakai judul lain", "error");
     console.log(error);
     throw error;
   }
