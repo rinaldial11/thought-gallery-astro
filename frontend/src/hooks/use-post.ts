@@ -14,7 +14,9 @@ import { useEffect, useState } from "react";
 
 export const useGetPosts = (
   status: "published" | "draft" = "published",
-  title: string
+  title: string,
+  createdBy: boolean,
+  userId: string
 ) => {
   const [token] = useAtom(tokenAtom);
   const [posts, setPosts] = useState<IPost[]>([]);
@@ -26,7 +28,13 @@ export const useGetPosts = (
 
     const fetchData = async () => {
       try {
-        const data = await getPosts(status, token.access_token ?? "", title);
+        const data = await getPosts(
+          status,
+          token.access_token ?? "",
+          title,
+          createdBy,
+          userId
+        );
         setPosts(data ?? []);
       } catch (err) {
         setError(err as Error);
@@ -36,14 +44,16 @@ export const useGetPosts = (
     };
 
     fetchData();
-  }, [status, token, title]);
+  }, [status, token, title, createdBy, userId]);
 
   return { posts, loading, error };
 };
 
 export const useGetPublicPosts = (
   status: "published" | "draft" = "published",
-  title: string
+  title: string,
+  createdBy: boolean,
+  userId: string
 ) => {
   const [publicPosts, setPublicPosts] = useState<IPost[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -52,7 +62,7 @@ export const useGetPublicPosts = (
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const posts = await getPublicPost(status, title);
+        const posts = await getPublicPost(status, title, createdBy, userId);
         setPublicPosts(posts ?? []);
       } catch (err) {
         setError(err as Error);
@@ -62,7 +72,7 @@ export const useGetPublicPosts = (
     };
 
     fetchData();
-  }, [status, title]);
+  }, [status, title, createdBy, userId]);
 
   return { publicPosts, isLoading, error };
 };

@@ -5,46 +5,37 @@ import type { IPost, IPostRequest } from "@/type/post";
 export const getPosts = async (
   status: "published" | "draft" = "published",
   token: string,
-  title: string
+  title: string,
+  createdBy: boolean,
+  userId: string
 ) => {
   try {
     if (status === "draft") {
-      if (title.length === 0) {
-        const res = await axiosInstance.get(
-          "/items/posts?fields=*,author.first_name,author.last_name,author.email",
-          {
-            params: {
-              filter: {
-                status: {
-                  _eq: "draft",
-                },
-              },
-            },
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+      const filter: Record<string, any> = {
+        status: {
+          _eq: "draft",
+        },
+      };
 
-        return res.data?.data as IPost[];
-      } else {
-        const res = await axiosInstance.get(
-          "/items/posts?fields=*,author.first_name,author.last_name,author.email",
-          {
-            params: {
-              filter: {
-                status: {
-                  _eq: "draft",
-                },
-                title: {
-                  _contains: title,
-                },
-              },
-            },
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-
-        return res.data?.data as IPost[];
+      if (title.trim().length > 0) {
+        filter.title = { _contains: title };
       }
+
+      if (createdBy) {
+        filter.author = { _eq: userId };
+      }
+
+      const res = await axiosInstance.get(
+        "/items/posts?fields=*,author.first_name,author.last_name,author.email",
+        {
+          params: {
+            filter,
+          },
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      return res.data?.data as IPost[];
     }
   } catch (error) {
     console.log(error);
@@ -54,44 +45,36 @@ export const getPosts = async (
 
 export const getPublicPost = async (
   status: "published" | "draft" = "published",
-  title: string
+  title: string,
+  createdBy: boolean,
+  userId: string
 ) => {
   try {
     if (status === "published") {
-      if (title.length === 0) {
-        const res = await axiosInstance.get(
-          "/items/posts?fields=*,author.first_name,author.last_name,author.email",
-          {
-            params: {
-              filter: {
-                status: {
-                  _eq: "published",
-                },
-              },
-            },
-          }
-        );
+      const filter: Record<string, any> = {
+        status: {
+          _eq: "published",
+        },
+      };
 
-        return res.data?.data as IPost[];
-      } else {
-        const res = await axiosInstance.get(
-          "/items/posts?fields=*,author.first_name,author.last_name,author.email",
-          {
-            params: {
-              filter: {
-                status: {
-                  _eq: "published",
-                },
-                title: {
-                  _contains: title,
-                },
-              },
-            },
-          }
-        );
-
-        return res.data?.data as IPost[];
+      if (title.trim().length > 0) {
+        filter.title = { _contains: title };
       }
+
+      if (createdBy) {
+        filter.author = { _eq: userId };
+      }
+
+      const res = await axiosInstance.get(
+        "/items/posts?fields=*,author.first_name,author.last_name,author.email",
+        {
+          params: {
+            filter,
+          },
+        }
+      );
+
+      return res.data?.data as IPost[];
     }
   } catch (error) {
     console.log(error);

@@ -22,14 +22,22 @@ import { useAtom } from "jotai";
 import { userAtom } from "@/store/user";
 import { Input } from "../ui/input";
 import { useDebounce } from "@/hooks/use-debounce";
+import { Switch } from "../ui/switch";
+import { Label } from "../ui/label";
 
 function DashboardPage() {
   const [filter, setFilter] = useState<"published" | "draft">("published");
   const [user] = useAtom(userAtom);
   const [title, setTitle] = useState("");
+  const [createdBy, setCreatedBy] = useState(false);
   const debouncetitle = useDebounce(title, 500);
-  const { posts } = useGetPosts(filter, debouncetitle);
-  const { publicPosts } = useGetPublicPosts(filter, debouncetitle);
+  const { posts } = useGetPosts(filter, debouncetitle, createdBy, user.id);
+  const { publicPosts } = useGetPublicPosts(
+    filter,
+    debouncetitle,
+    createdBy,
+    user.id
+  );
 
   return (
     <SidebarProvider>
@@ -51,11 +59,23 @@ function DashboardPage() {
               <div className="py-4 flex flex-col gap-5">
                 <div className="text-xl font-semibold flex flex-col gap-4">
                   <div>Published Thoughts</div>
-                  <Input
-                    placeholder="Search article"
-                    onChange={(e) => setTitle(e.target.value)}
-                    className="w-100"
-                  />
+                  <div className="flex items-center justify-between gap-4 pr-50">
+                    <Input
+                      placeholder="Search article"
+                      onChange={(e) => setTitle(e.target.value)}
+                      className="w-100"
+                    />
+                    <div className="flex gap-2">
+                      <Switch
+                        checked={createdBy}
+                        onCheckedChange={(checked) => setCreatedBy(checked)}
+                        id="own"
+                      />
+                      <Label className="text-sm" htmlFor="own">
+                        Own Thought
+                      </Label>
+                    </div>
+                  </div>
                 </div>
                 {posts?.length === 0 || posts === undefined ? (
                   <div className="w-full h-130 flex justify-center items-center">
@@ -109,11 +129,23 @@ function DashboardPage() {
               <div className="py-4 flex flex-col gap-5">
                 <div className="text-xl font-semibold flex flex-col gap-4">
                   <div>Published Thoughts</div>
-                  <Input
-                    placeholder="Search article"
-                    onChange={(e) => setTitle(e.target.value)}
-                    className="w-100"
-                  />
+                  <div className="flex items-center justify-between gap-4 pr-50">
+                    <Input
+                      placeholder="Search article"
+                      onChange={(e) => setTitle(e.target.value)}
+                      className="w-100"
+                    />
+                    <div className="flex gap-2">
+                      <Switch
+                        checked={createdBy}
+                        onCheckedChange={(checked) => setCreatedBy(checked)}
+                        id="own"
+                      />
+                      <Label className="text-sm" htmlFor="own">
+                        Own Thought
+                      </Label>
+                    </div>
+                  </div>
                 </div>
                 {publicPosts?.length === 0 || publicPosts === undefined ? (
                   <div className="w-full h-130 flex justify-center items-center">

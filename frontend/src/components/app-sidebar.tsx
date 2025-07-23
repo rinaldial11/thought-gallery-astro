@@ -15,8 +15,6 @@ import {
 import tgIcon from "@/assets/icon/tg-icon.png";
 import { PowerOff } from "lucide-react";
 import { useLogout } from "@/hooks/use-logout";
-import { useAtom } from "jotai";
-import { tokenAtom } from "@/store/token";
 
 const data = {
   navMain: [
@@ -36,13 +34,26 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { logout } = useLogout();
-  const [token] = useAtom(tokenAtom);
 
   return (
     <Sidebar {...props}>
       <SidebarHeader>
-        <div className="w-full flex justify-center">
-          <img src={tgIcon.src} alt="icon" className="w-30" />
+        <div className="w-full flex justify-center pt-5">
+          <div className="flex gap-4 items-center">
+            <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center">
+              <svg
+                className="w-8 h-8 text-white"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+              </svg>
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-blue-600">MUGEN</h1>
+              <p className="text-sm text-gray-600">INDONESIA</p>
+            </div>
+          </div>
         </div>
       </SidebarHeader>
       <SidebarContent>
