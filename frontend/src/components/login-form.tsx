@@ -20,21 +20,21 @@ export function LoginForm({
 }: React.ComponentProps<"div">) {
   const {
     register,
-    handleSubmit,
+    // handleSubmit,
     formState: { errors },
   } = useForm<ILoginReq>({
     resolver: yupResolver(loginSchema),
   });
-  const { loginSubmit, isLoading } = useLoginRequest();
+  const { isLoading } = useLoginRequest();
 
-  const handleLogin = async (loginForm: ILoginReq) => {
-    try {
-      await loginSubmit(loginForm);
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
-  };
+  // const handleLogin = async (loginForm: ILoginReq) => {
+  //   try {
+  //     await loginSubmit(loginForm);
+  //   } catch (error) {
+  //     console.log(error);
+  //     throw error;
+  //   }
+  // };
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -62,7 +62,11 @@ export function LoginForm({
           </CardDescription>
         </div>
         <CardContent>
-          <form onSubmit={handleSubmit(handleLogin)}>
+          <form
+            action="/api/auth/login"
+            method="POST"
+            // onSubmit={handleSubmit(handleLogin)}
+          >
             <div className="flex flex-col gap-6">
               <div className="grid gap-3">
                 <Label htmlFor="email">Email</Label>
@@ -70,6 +74,7 @@ export function LoginForm({
                   <Input
                     id="email"
                     {...register("email")}
+                    name="email"
                     type="email"
                     placeholder="Enter your email..."
                   />
@@ -88,6 +93,7 @@ export function LoginForm({
                   <Input
                     id="password"
                     {...register("password")}
+                    name="password"
                     type="password"
                     placeholder="Enter your password..."
                   />

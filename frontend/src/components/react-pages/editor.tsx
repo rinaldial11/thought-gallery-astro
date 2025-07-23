@@ -17,7 +17,6 @@ function EditorPage({ id }: { id: string }) {
   const [value, setValue] = useState<string>("# Enter your thought here!");
   const socketRef = useRef<Socket | null>(null);
   const [title, setTitle] = useState<string>("");
-  const [otherEditors] = useState<number>(0);
   const { submitPost } = useSubmitPosts();
   const [user] = useAtom(userAtom);
 
@@ -158,9 +157,6 @@ function EditorPage({ id }: { id: string }) {
       <div className="flex flex-col gap-4 h-screen">
         <div className="flex justify-between items-center mx-8 mt-4">
           <div className="text-xl font-semibold">Editor</div>
-          <span className="text-sm text-gray-500">
-            {otherEditors} editor(s) online
-          </span>
         </div>
         {id === "new" ? (
           <>
@@ -214,7 +210,7 @@ function EditorPage({ id }: { id: string }) {
         <div className="mx-8 flex gap-3 justify-between">
           <Button
             onClick={() => window.history.back()}
-            className="w-10 h-10 rounded-full flex justify-center items-center"
+            className="w-10 h-10 rounded-full flex justify-center items-center bg-blue-600"
           >
             <ArrowLeft />
           </Button>
@@ -231,6 +227,7 @@ function EditorPage({ id }: { id: string }) {
             <Button
               disabled={value === "" || title === ""}
               onClick={handlePublishSubmit}
+              className="bg-blue-600"
             >
               Save and Publish
             </Button>

@@ -12,9 +12,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import tgIcon from "@/assets/icon/tg-icon.png";
 import { PowerOff } from "lucide-react";
-import { useLogout } from "@/hooks/use-logout";
 
 const data = {
   navMain: [
@@ -33,8 +31,6 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { logout } = useLogout();
-
   return (
     <Sidebar {...props}>
       <SidebarHeader>
@@ -75,13 +71,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarGroup>
         ))}
       </SidebarContent>
-      <div
-        onClick={logout}
+      <a
+        href="/api/auth/logout"
         className="mb-10 text-base font-medium text-red-500 px-4 flex items-center gap-2 cursor-pointer hover:bg-gray-100"
       >
         <PowerOff size={15} />
         Sign out
-      </div>
+      </a>
       <SidebarRail />
     </Sidebar>
   );

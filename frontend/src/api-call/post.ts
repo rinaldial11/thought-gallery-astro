@@ -1,6 +1,8 @@
 import { showToast } from "@/components/toaster";
 import { axiosInstance } from "@/lib/axios-instance";
+import { directus } from "@/lib/directus-instance";
 import type { IPost, IPostRequest } from "@/type/post";
+import { readItems } from "@directus/sdk";
 
 export const getPosts = async (
   status: "published" | "draft" = "published",
@@ -65,16 +67,19 @@ export const getPublicPost = async (
         filter.author = { _eq: userId };
       }
 
-      const res = await axiosInstance.get(
-        "/items/posts?fields=*,author.first_name,author.last_name,author.email",
-        {
-          params: {
-            filter,
-          },
-        }
+      const res = await directus.request(
+        readItems("posts", {
+          fields: [
+            "*",
+            "author.first_name",
+            "author.last_name",
+            "author.email",
+          ],
+          filter,
+        })
       );
 
-      return res.data?.data as IPost[];
+      return res as IPost[];
     }
   } catch (error) {
     console.log(error);

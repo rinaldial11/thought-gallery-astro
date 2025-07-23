@@ -11,6 +11,7 @@ import { tokenAtom } from "@/store/token";
 import type { IPost, IPostRequest } from "@/type/post";
 import { showToast } from "@/components/toaster";
 import { useEffect, useState } from "react";
+import { useRefreshToken } from "./use-refresh-token";
 
 export const useGetPosts = (
   status: "published" | "draft" = "published",
@@ -18,10 +19,11 @@ export const useGetPosts = (
   createdBy: boolean,
   userId: string
 ) => {
-  const [token] = useAtom(tokenAtom);
+  // const [token] = useAtom(tokenAtom);
   const [posts, setPosts] = useState<IPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  const { token } = useRefreshToken();
 
   useEffect(() => {
     if (!token?.access_token) return;

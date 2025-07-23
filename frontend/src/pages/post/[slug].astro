@@ -1,34 +1,33 @@
 ---
 import type { IPost } from '@/type/post';
 import '../../styles/global.css';
-import { axiosInstance } from '@/lib/axios-instance';
 import { marked } from "marked";
+import { directus } from "@/lib/directus-instance";
+import { readItems } from '@directus/sdk';
 // import { remark } from 'remark';
 // import remarkHtml from 'remark-html';
 
 marked.setOptions({
-  breaks: true,        // Mengenali line breaks
-  gfm: true,          // GitHub Flavored Markdown
-  pedantic: false,    // Tidak terlalu strict
+  breaks: true,        
+  gfm: true,          
+  pedantic: false,    
 });
 
 export async function getStaticPaths() {
   try {
     console.log('Fetching posts for static paths...');
-    const res = await axiosInstance.get(
-      "/items/posts?fields=*,author.first_name,author.last_name,author.email",
-      {
-        params: {
-          filter: {
-            status: {
-              _eq: "published",
-            },
-          },
-        },
-      }
-    );
+    const res = await directus.request(
+  readItems('posts', {
+    fields: ['*', 'author.first_name', 'author.last_name', 'author.email'],
+    filter: {
+      status: {
+        _eq: 'published',
+      },
+    },
+  })
+);
     
-    const posts = res.data?.data || [];
+    const posts = (res || []) as IPost[];
     return posts
   .filter((post: IPost) => typeof post.slug === 'string' && post.slug.trim() !== "")
   .map((post: IPost) => ({
@@ -46,26 +45,22 @@ let post: IPost | null = null;
 let error = null;
 
 try {
-  console.log('Fetching post data for slug:', slug);
-  const res = await axiosInstance.get(
-    "/items/posts?fields=*,author.first_name,author.last_name,author.email",
-    {
-      params: {
-        filter: {
-          slug: {
-            _eq: slug,
-          },
-          status: {
-            _eq: "published", 
-          },
-        },
-        limit: 1,
+  const res = await directus.request(
+  readItems("posts", {
+    fields: ['*', 'author.first_name', 'author.last_name', 'author.email'],
+    filter: {
+      slug: {
+        _eq: slug,
       },
-    }
-  );
+      status: {
+        _eq: "published",
+      },
+    },
+    limit: 1,
+  })
+);
 
-  post = res.data?.data?.[0] as IPost;
-  console.log('Post fetched:', post ? 'Success' : 'Not found');
+  post = res[0] as IPost;
   
   if (!post) {
     return Astro.redirect('/404');
@@ -87,12 +82,6 @@ function formatDate(dateString?: string): string {
 }
 
 const content = marked(post?.body ?? "");
-// const content = marked(post?.body ?? "")
-// const processedContent = await remark()
-//   .use(remarkHtml)
-//   .process(post?.body ?? "");
-
-// const content = processedContent.toString();
 ---
 
 <!DOCTYPE html>

@@ -7,6 +7,8 @@ export const loginRequest = async (body: ILoginReq) => {
   try {
     const res = await directus.login(body);
 
+    await directus.setToken(res.access_token);
+
     showToast(
       "Login Success",
       "Kamu akan dialihkan ke halaman berikutnya",

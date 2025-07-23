@@ -1,4 +1,5 @@
 // import { axiosInstance } from "@/lib/axios-instance";
+import { logout } from "@directus/sdk";
 import type { IToken } from "../type/token";
 import { directus } from "@/lib/directus-instance";
 
@@ -15,7 +16,9 @@ export const logoutRequest = async (token: IToken) => {
     //     },
     //   }
     // );
-    const res = await directus.logout();
+    const res = await directus.request(
+      logout({ refresh_token: token.refresh_token ?? "" })
+    );
 
     return res;
   } catch (error) {
