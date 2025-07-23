@@ -4,25 +4,47 @@ import type { IPost, IPostRequest } from "@/type/post";
 
 export const getPosts = async (
   status: "published" | "draft" = "published",
-  token: string
+  token: string,
+  title: string
 ) => {
   try {
     if (status === "draft") {
-      const res = await axiosInstance.get(
-        "/items/posts?fields=*,author.first_name,author.last_name,author.email",
-        {
-          params: {
-            filter: {
-              status: {
-                _eq: "draft",
+      if (title.length === 0) {
+        const res = await axiosInstance.get(
+          "/items/posts?fields=*,author.first_name,author.last_name,author.email",
+          {
+            params: {
+              filter: {
+                status: {
+                  _eq: "draft",
+                },
               },
             },
-          },
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
 
-      return res.data?.data as IPost[];
+        return res.data?.data as IPost[];
+      } else {
+        const res = await axiosInstance.get(
+          "/items/posts?fields=*,author.first_name,author.last_name,author.email",
+          {
+            params: {
+              filter: {
+                status: {
+                  _eq: "draft",
+                },
+                title: {
+                  _contains: title,
+                },
+              },
+            },
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        return res.data?.data as IPost[];
+      }
     }
   } catch (error) {
     console.log(error);
@@ -31,24 +53,45 @@ export const getPosts = async (
 };
 
 export const getPublicPost = async (
-  status: "published" | "draft" = "published"
+  status: "published" | "draft" = "published",
+  title: string
 ) => {
   try {
     if (status === "published") {
-      const res = await axiosInstance.get(
-        "/items/posts?fields=*,author.first_name,author.last_name,author.email",
-        {
-          params: {
-            filter: {
-              status: {
-                _eq: "published",
+      if (title.length === 0) {
+        const res = await axiosInstance.get(
+          "/items/posts?fields=*,author.first_name,author.last_name,author.email",
+          {
+            params: {
+              filter: {
+                status: {
+                  _eq: "published",
+                },
               },
             },
-          },
-        }
-      );
+          }
+        );
 
-      return res.data?.data as IPost[];
+        return res.data?.data as IPost[];
+      } else {
+        const res = await axiosInstance.get(
+          "/items/posts?fields=*,author.first_name,author.last_name,author.email",
+          {
+            params: {
+              filter: {
+                status: {
+                  _eq: "published",
+                },
+                title: {
+                  _contains: title,
+                },
+              },
+            },
+          }
+        );
+
+        return res.data?.data as IPost[];
+      }
     }
   } catch (error) {
     console.log(error);

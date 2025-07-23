@@ -17,17 +17,19 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { bodyParser } from "@/lib/body-parser";
-// import { useAuthorName } from "../hooks/use-author-name";
 import { Plus } from "lucide-react";
 import { useAtom } from "jotai";
 import { userAtom } from "@/store/user";
+import { Input } from "../ui/input";
+import { useDebounce } from "@/hooks/use-debounce";
 
 function DashboardPage() {
   const [filter, setFilter] = useState<"published" | "draft">("published");
   const [user] = useAtom(userAtom);
-  const { posts } = useGetPosts(filter);
-  const { publicPosts } = useGetPublicPosts(filter);
-  //   const { getAuthorName } = useAuthorName();
+  const [title, setTitle] = useState("");
+  const debouncetitle = useDebounce(title, 500);
+  const { posts } = useGetPosts(filter, debouncetitle);
+  const { publicPosts } = useGetPublicPosts(filter, debouncetitle);
 
   return (
     <SidebarProvider>
@@ -47,7 +49,14 @@ function DashboardPage() {
             </TabsList>
             <TabsContent value="draft">
               <div className="py-4 flex flex-col gap-5">
-                <div className="text-xl font-semibold">Draft Thoughts</div>
+                <div className="text-xl font-semibold flex flex-col gap-4">
+                  <div>Published Thoughts</div>
+                  <Input
+                    placeholder="Search article"
+                    onChange={(e) => setTitle(e.target.value)}
+                    className="w-100"
+                  />
+                </div>
                 {posts?.length === 0 || posts === undefined ? (
                   <div className="w-full h-130 flex justify-center items-center">
                     <div className="text-gray-400 text-xl font-semibold">
@@ -98,7 +107,14 @@ function DashboardPage() {
             </TabsContent>
             <TabsContent value="published">
               <div className="py-4 flex flex-col gap-5">
-                <div className="text-xl font-semibold">Published Thoughts</div>
+                <div className="text-xl font-semibold flex flex-col gap-4">
+                  <div>Published Thoughts</div>
+                  <Input
+                    placeholder="Search article"
+                    onChange={(e) => setTitle(e.target.value)}
+                    className="w-100"
+                  />
+                </div>
                 {publicPosts?.length === 0 || publicPosts === undefined ? (
                   <div className="w-full h-130 flex justify-center items-center">
                     <div className="text-gray-400 text-xl font-semibold">
@@ -133,7 +149,7 @@ function DashboardPage() {
                               onClick={() =>
                                 (window.location.href = `/post/${post.slug}`)
                               }
-                              className="w-max"
+                              className="w-max bg-blue-600"
                             >
                               Read More
                             </Button>
@@ -148,7 +164,7 @@ function DashboardPage() {
           </Tabs>
         </div>
         <Button
-          className="fixed bottom-15 right-15 rounded-full w-14 h-14 p-0 shadow-lg z-50"
+          className="fixed bottom-15 bg-blue-600 right-15 rounded-full w-14 h-14 p-0 shadow-lg z-50"
           variant="default"
           onClick={() => (window.location.href = "/editor/new")}
         >

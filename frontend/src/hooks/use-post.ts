@@ -12,7 +12,10 @@ import type { IPost, IPostRequest } from "@/type/post";
 import { showToast } from "@/components/toaster";
 import { useEffect, useState } from "react";
 
-export const useGetPosts = (status: "published" | "draft" = "published") => {
+export const useGetPosts = (
+  status: "published" | "draft" = "published",
+  title: string
+) => {
   const [token] = useAtom(tokenAtom);
   const [posts, setPosts] = useState<IPost[]>([]);
   const [loading, setLoading] = useState(true);
@@ -23,7 +26,7 @@ export const useGetPosts = (status: "published" | "draft" = "published") => {
 
     const fetchData = async () => {
       try {
-        const data = await getPosts(status, token.access_token ?? "");
+        const data = await getPosts(status, token.access_token ?? "", title);
         setPosts(data ?? []);
       } catch (err) {
         setError(err as Error);
@@ -33,13 +36,14 @@ export const useGetPosts = (status: "published" | "draft" = "published") => {
     };
 
     fetchData();
-  }, [status, token]);
+  }, [status, token, title]);
 
   return { posts, loading, error };
 };
 
 export const useGetPublicPosts = (
-  status: "published" | "draft" = "published"
+  status: "published" | "draft" = "published",
+  title: string
 ) => {
   const [publicPosts, setPublicPosts] = useState<IPost[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -48,7 +52,7 @@ export const useGetPublicPosts = (
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const posts = await getPublicPost(status);
+        const posts = await getPublicPost(status, title);
         setPublicPosts(posts ?? []);
       } catch (err) {
         setError(err as Error);
@@ -58,7 +62,7 @@ export const useGetPublicPosts = (
     };
 
     fetchData();
-  }, [status]);
+  }, [status, title]);
 
   return { publicPosts, isLoading, error };
 };
