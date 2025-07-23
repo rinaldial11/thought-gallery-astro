@@ -1,5 +1,5 @@
 // import { useState } from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import Editor from "@uiw/react-md-editor";
 import { Input } from "@/components/ui/input";
@@ -9,10 +9,13 @@ import { userAtom } from "@/store/user";
 import { showToast } from "@/components/toaster";
 import { ArrowLeft } from "lucide-react";
 import { generateSlug, getSeoDesc } from "@/lib/seo-generator";
+import type { Socket } from "socket.io-client";
+import { socket } from "@/lib/socket-io-client";
 
 function EditorPage({ id }: { id: string }) {
   const { postById: draftedPost } = useGetPostById(id ?? "");
   const [value, setValue] = useState<string>("# Enter your thought here!");
+  const socketRef = useRef<Socket | null>(null);
   const [title, setTitle] = useState<string>("");
   const [otherEditors] = useState<number>(0);
   const { submitPost } = useSubmitPosts();
@@ -61,8 +64,9 @@ function EditorPage({ id }: { id: string }) {
         id ?? ""
       );
 
+      setValue(draftedPost?.body ?? "");
+
       showToast("Draft Saved", "Your draft has been saved!", "success");
-      window.location.href = "/dashboard";
     } catch (error) {
       console.log(error);
       throw error;
@@ -125,6 +129,24 @@ function EditorPage({ id }: { id: string }) {
   };
 
   useEffect(() => {
+    socketRef.current = socket;
+
+    socket.on("connect", () => {
+      console.log("✅ Connected to socket:", socket.id);
+      socket.emit("join-document", id);
+    });
+
+    socket.on("receive-edit", (newContent: string) => {
+      console.log("📥 Received new content:", newContent);
+      setValue(newContent);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [id]);
+
+  useEffect(() => {
     if (id !== "new") {
       setValue(draftedPost?.body ?? "");
       setTitle(draftedPost?.title ?? "");
@@ -149,7 +171,14 @@ function EditorPage({ id }: { id: string }) {
                 className="max-w-56 font-bold"
                 placeholder="Your post title"
               />
-              <Editor value={value} onChange={(val) => setValue(val ?? "")} />
+              <Editor
+                value={value}
+                onChange={(val) => {
+                  const updated = val ?? "";
+                  setValue(updated);
+                }}
+                preview="edit"
+              />
             </div>
           </>
         ) : (
@@ -161,7 +190,24 @@ function EditorPage({ id }: { id: string }) {
                 className="max-w-56 font-bold"
                 placeholder="Your post title"
               />
-              <Editor value={value} onChange={(val) => setValue(val ?? "")} />
+              <Editor
+                value={value}
+                onChange={(val) => {
+                  console.log("🧪 onChange triggered", val);
+                  const updated = val ?? "";
+                  setValue(updated);
+
+                  console.log("✉️ Emit edit-document", {
+                    postId: id,
+                    content: updated,
+                  });
+
+                  socketRef.current?.emit("edit-document", {
+                    postId: id,
+                    content: updated,
+                  });
+                }}
+              />
             </div>
           </>
         )}

@@ -2,16 +2,16 @@
 // src/components/program-card.astro
 import { directus } from '@/lib/directus-instance';
 import { readItems } from '@directus/sdk';
+import { marked } from 'marked';
 
-const programTitle = Astro.props.programTitle;
 const image = Astro.props.image;
 const slug = Astro.props.slug;
 
 const posts = await directus.request(
   readItems("posts", {
     filter: {
-      title: {
-        _eq: programTitle,
+      slug: {
+        _eq: slug,
       },
       status: {
         _eq: "published",
@@ -23,21 +23,21 @@ const posts = await directus.request(
 );
 
 const post = posts?.[0];
+const firstSentence = post?.body?.split("-Bimbingan")[0]?.trim() || "";
+const content = marked(firstSentence);
 ---
 
 <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden">
   <img
     src={image}
-    alt={programTitle}
+    alt={post?.title}
     class="w-full h-48 object-cover"
   />
   <div class="p-8">
     <h3 class="text-2xl font-semibold text-gray-900 mb-4">
-      {programTitle}
+      {post?.title}
     </h3>
-    <p class="text-gray-600 mb-6">
-      {post?.body ?? "Deskripsi belum tersedia."}
-    </p>
+      <div class="text-gray-600 mb-6 prose-custom" set:html={content} />
     <a
       href={`/post/${post.slug}`}
       class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"

@@ -5,14 +5,17 @@ import { tokenAtom } from "@/store/token";
 import { userAtom } from "@/store/user";
 import type { ILoginReq } from "@/type/login-request";
 import { useAtom } from "jotai/react";
+import { useState } from "react";
 // import { useNavigate } from "react-router";
 
 export const useLoginRequest = () => {
   const [, setToken] = useAtom(tokenAtom);
   const [, setUser] = useAtom(userAtom);
+  const [isLoading, setIsLoading] = useState(false);
   // const navigate = useNavigate();
 
   const loginSubmit = async (body: ILoginReq) => {
+    setIsLoading(true);
     try {
       const res = await loginRequest(body);
 
@@ -31,13 +34,15 @@ export const useLoginRequest = () => {
       }
 
       // navigate("/dashboard");
-      window.location.href = "dashboard";
+      window.location.href = "/dashboard";
     } catch (error) {
       showToast("Login Failed", "Email atau password salah", "error");
       console.log(error);
       throw error;
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  return { loginSubmit };
+  return { loginSubmit, isLoading };
 };

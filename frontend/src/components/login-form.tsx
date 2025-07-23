@@ -25,7 +25,7 @@ export function LoginForm({
   } = useForm<ILoginReq>({
     resolver: yupResolver(loginSchema),
   });
-  const { loginSubmit } = useLoginRequest();
+  const { loginSubmit, isLoading } = useLoginRequest();
 
   const handleLogin = async (loginForm: ILoginReq) => {
     try {
@@ -99,9 +99,12 @@ export function LoginForm({
                 </div>
               </div>
               <div className="flex flex-col gap-3">
-                <Button type="submit" className="w-full bg-blue-600">
-                  Login
-                  {/* {isPending ? "Logging in..." : "Login"} */}
+                <Button
+                  disabled={isLoading}
+                  type="submit"
+                  className="w-full bg-blue-600"
+                >
+                  {isLoading ? "Logging in..." : "Login"}
                 </Button>
               </div>
               <a href="/" className="underline text-end text-sm">

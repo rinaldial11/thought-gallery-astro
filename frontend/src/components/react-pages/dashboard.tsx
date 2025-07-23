@@ -24,6 +24,7 @@ import { Input } from "../ui/input";
 import { useDebounce } from "@/hooks/use-debounce";
 import { Switch } from "../ui/switch";
 import { Label } from "../ui/label";
+import { marked } from "marked";
 
 function DashboardPage() {
   const [filter, setFilter] = useState<"published" | "draft">("published");
@@ -87,6 +88,14 @@ function DashboardPage() {
                   <div className="flex gap-4 flex-wrap">
                     {" "}
                     {posts?.map((post, postIdx) => {
+                      const contentBody = marked(
+                        post?.body.split(" ").length > 10
+                          ? `${post?.body
+                              .split(" ")
+                              .slice(0, 10)
+                              .join(" ")} ...`
+                          : post?.body
+                      );
                       return (
                         <Card key={postIdx} className="w-70 h-80">
                           <CardHeader>
@@ -103,8 +112,18 @@ function DashboardPage() {
                             </CardDescription>
                           </CardHeader>
                           <CardContent className="h-35 overflow-hidden">
-                            <p className="text-justify leading-relaxed tracking-normal hyphens-auto">
-                              {bodyParser(post.body)}
+                            <p
+                              className="leading-relaxed tracking-normal hyphens-auto"
+                              dangerouslySetInnerHTML={{
+                                __html: contentBody ?? "",
+                              }}
+                            >
+                              {/* {post.body.split(" ").length > 10
+                                ? `${post.body
+                                    .split(" ")
+                                    .slice(0, 10)
+                                    .join(" ")} ...`
+                                : post.body} */}
                             </p>
                           </CardContent>
                           <CardFooter>
@@ -156,6 +175,14 @@ function DashboardPage() {
                 ) : (
                   <div className="flex gap-4 flex-wrap">
                     {publicPosts?.map((post, postIdx) => {
+                      const contentBody = marked(
+                        post?.body.split(" ").length > 10
+                          ? `${post?.body
+                              .split(" ")
+                              .slice(0, 10)
+                              .join(" ")} ...`
+                          : post?.body
+                      );
                       return (
                         <Card key={postIdx} className="w-70 h-80">
                           <CardHeader>
@@ -172,8 +199,18 @@ function DashboardPage() {
                             </CardDescription>
                           </CardHeader>
                           <CardContent className="h-35 overflow-hidden">
-                            <p className="text-justify leading-relaxed tracking-normal hyphens-auto">
-                              {bodyParser(post.body)}
+                            <p
+                              className="leading-relaxed tracking-normal hyphens-auto"
+                              dangerouslySetInnerHTML={{
+                                __html: contentBody ?? "",
+                              }}
+                            >
+                              {/* {post.body.split(" ").length > 10
+                                ? `${post.body
+                                    .split(" ")
+                                    .slice(0, 10)
+                                    .join(" ")} ...`
+                                : post.body} */}
                             </p>
                           </CardContent>
                           <CardFooter>
