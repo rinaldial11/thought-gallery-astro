@@ -1,10 +1,17 @@
 ---
 import '../styles/global.css';
-// Component Imports
-import Button from '../components/Button.astro';
+import { directus } from '@/lib/directus-instance';
+import { readSingleton} from "@directus/sdk"
+import { Building2, Clock, TrendingUp, User } from '@lucide/astro';
+import Navbar from '@/components/navbar.astro';
+import ProgramCard from '@/components/program-card.astro';
+import Footer from '@/components/footer.astro';
+import landingImg from "../assets/landing-img.png";
+import studentImg from "../assets/student-program.png";
+import profImg from "../assets/professional-program.png";
+import sswImg from "../assets/ssw-program.png";
 
-// Full Astro Component Syntax:
-// https://docs.astro.build/basics/astro-components/
+const global = await directus.request(readSingleton("global"))
 ---
 
 <html lang="en">
@@ -13,12 +20,108 @@ import Button from '../components/Button.astro';
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Thought Gallery</title>
+		<title>{global.title}</title>
+		<meta name="description" content={global.description} />
 	</head>
 	<body>
-		<div class="grid place-items-center h-screen content-center">
-			<Button>Tailwind Button in Astro!</Button>
-			<a href="/markdown-page" class="p-4 underline">Markdown is also supported...</a>
-		</div>
+		<Navbar />
+		<section class="bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 text-white">
+        <div class="container mx-auto px-6 py-16">
+          <div class="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <h1 class="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+                PT. MULTI GENERASI
+                <span class="block text-blue-200">INDONESIA</span>
+              </h1>
+              <p class="text-xl md:text-2xl mb-4 text-blue-100">
+                マルチ ジェネラシ インドネシア (株式会社)
+              </p>
+              <p class="text-lg mb-8 text-blue-50 leading-relaxed">
+                Menjalin kemitraan dengan perusahaan Jepang untuk membuka akses
+                karier bagi generasi Indonesia. We Value People.
+              </p>
+            </div>
+            <div class="relative">
+              <img
+                src={landingImg.src}
+                alt="Professional Training"
+                class="rounded-2xl shadow-2xl w-full h-[500px] object-cover"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-blue-900/20 to-transparent rounded-2xl"></div>
+            </div>
+          </div>
+
+          {/* Stats Section */}
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mt-16 pt-16 border-t border-blue-500">
+            <div class="text-center">
+              <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <User class='text-blue-500' />
+              </div>
+              <h3 class="text-2xl font-bold">1000+</h3>
+              <p class="text-blue-200">Peserta</p>
+            </div>
+            <div class="text-center">
+              <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                {/* <svg
+                  class="w-8 h-8"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg> */}
+                <TrendingUp class='text-blue-500' />
+              </div>
+              <h3 class="text-2xl font-bold">95%</h3>
+              <p class="text-blue-200">Tingkat Keberhasilan</p>
+            </div>
+            <div class="text-center">
+              <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Building2 class='text-blue-500' />
+              </div>
+              <h3 class="text-2xl font-bold">50+</h3>
+              <p class="text-blue-200">Perusahaan Partner</p>
+            </div>
+            <div class="text-center">
+              <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Clock class='text-blue-500' />
+              </div>
+              <h3 class="text-2xl font-bold">5+</h3>
+              <p class="text-blue-200">Tahun Pengalaman</p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="py-20 bg-gray-50">
+        <div class="container mx-auto px-6">
+          <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+              Program <span class="text-blue-600">Terpopuler</span>
+            </h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+              Temukan program yang sesuai dengan minat dan keahlian Anda untuk
+              berkarir di Jepang
+            </p>
+          </div>
+
+          <div class="grid md:grid-cols-3 gap-8 mb-12">
+			<ProgramCard
+    			programTitle="Student Program"
+    			image={studentImg.src}
+    			slug="student-program"
+  			/>
+			<ProgramCard
+    			programTitle="Professional"
+    			image={profImg.src}
+    			slug="professional"
+  			/>
+			<ProgramCard
+    			programTitle="SSW Program"
+    			image={sswImg.src}
+    			slug="ssw-program"
+  			/>
+          </div>
+        </div>
+      </section>
+	  <Footer />
 	</body>
 </html>

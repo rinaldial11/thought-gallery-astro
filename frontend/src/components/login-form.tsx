@@ -70,7 +70,7 @@ export function LoginForm({
                   {/* {isPending ? "Logging in..." : "Login"} */}
                 </Button>
               </div>
-              <a href="/dashboard" className="underline text-end text-sm">
+              <a href="/" className="underline text-end text-sm">
                 back to landing page?
               </a>
             </div>
