@@ -5,7 +5,7 @@ import Editor from "@uiw/react-md-editor";
 import { Input } from "@/components/ui/input";
 import { useSubmitPosts } from "@/hooks/use-post";
 import { useAtom } from "jotai";
-import { userAtom } from "@/store/user";
+import { directuseUserAtom, userAtom } from "@/store/user";
 import { showToast } from "@/components/toaster";
 import { ArrowLeft } from "lucide-react";
 import { generateSlug, getSeoDesc } from "@/lib/seo-generator";
@@ -19,7 +19,8 @@ function EditorPage({ id, draftedPost }: { id: string; draftedPost: IPost }) {
   const socketRef = useRef<Socket | null>(null);
   const [title, setTitle] = useState<string>("");
   const { submitPost } = useSubmitPosts();
-  const [user] = useAtom(userAtom);
+  const [user] = useAtom(directuseUserAtom);
+  const [localDraft, setLocalDraft] = useState<IPost>(draftedPost);
 
   const handleDraftSubmit = async () => {
     try {
@@ -64,7 +65,20 @@ function EditorPage({ id, draftedPost }: { id: string; draftedPost: IPost }) {
         id ?? ""
       );
 
-      setValue(draftedPost?.body ?? "");
+      setLocalDraft({
+        ...(localDraft ?? {}),
+        body: value,
+        title: title,
+        seo_desc: getSeoDesc(value),
+        seo_title: title,
+        slug: generateSlug(title),
+        status: "draft",
+        author: {
+          email: user.email,
+          first_name: user.first_name,
+          last_name: user.last_name,
+        },
+      });
 
       showToast("Draft Saved", "Your draft has been saved!", "success");
     } catch (error) {
@@ -106,7 +120,6 @@ function EditorPage({ id, draftedPost }: { id: string; draftedPost: IPost }) {
       await submitPost(
         {
           body: value,
-          author: user.id,
           seo_desc: getSeoDesc(value),
           seo_title: title,
           slug: generateSlug(title),
@@ -121,7 +134,9 @@ function EditorPage({ id, draftedPost }: { id: string; draftedPost: IPost }) {
         "Congrats! Your draft has been publsihed.",
         "success"
       );
-      window.location.href = "/dashboard";
+      setTimeout(() => {
+        window.location.href = "/dashboard";
+      }, 400);
     } catch (error) {
       console.log(error);
       throw error;
@@ -152,6 +167,10 @@ function EditorPage({ id, draftedPost }: { id: string; draftedPost: IPost }) {
       setTitle(draftedPost?.title ?? "");
     }
   }, [draftedPost?.body, id]); //eslint-disable-line
+
+  useEffect(() => {
+    setLocalDraft(draftedPost ?? null);
+  }, [draftedPost]);
 
   return (
     <>
@@ -218,7 +237,10 @@ function EditorPage({ id, draftedPost }: { id: string; draftedPost: IPost }) {
           <div className="flex gap-3">
             <Button
               disabled={
-                draftedPost?.body === value || value === "" || title === ""
+                title.trim() === "" ||
+                value.trim() === "" ||
+                (title === (localDraft?.title ?? "") &&
+                  value === (localDraft?.body ?? ""))
               }
               onClick={handleDraftSubmit}
               variant={"outline"}

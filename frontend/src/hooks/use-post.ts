@@ -7,7 +7,7 @@ import {
   updatePost,
 } from "@/api-call/post";
 import { useAtom } from "jotai/react";
-import { tokenAtom } from "@/store/token";
+import { directusTokenAtom, tokenAtom } from "@/store/token";
 import type { IPost, IPostRequest } from "@/type/post";
 import { showToast } from "@/components/toaster";
 import { useEffect, useState } from "react";
@@ -23,11 +23,18 @@ export const useGetPosts = (
   const [posts, setPosts] = useState<IPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  const [tokenStorage] = useAtom(directusTokenAtom);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await getPosts(status, token, title, createdBy, userId);
+        const data = await getPosts(
+          status,
+          token ?? tokenStorage,
+          title,
+          createdBy,
+          userId
+        );
         setPosts(data ?? []);
       } catch (err) {
         setError(err as Error);
@@ -122,19 +129,19 @@ export const useGetPostById = (postId: string) => {
 };
 
 export const useSubmitPosts = () => {
-  const [token] = useAtom(tokenAtom);
+  const [token] = useAtom(directusTokenAtom);
 
   const submitPost = async (body: IPostRequest, postId: string) => {
     try {
-      if (!token.access_token) {
+      if (!token) {
         showToast("Session Expired", "No access token available", "error");
         throw new Error("No access token available");
       }
 
       if (postId === "new") {
-        await postPost(body, token.access_token);
+        await postPost(body, token);
       } else {
-        await updatePost(body, token.access_token, postId);
+        await updatePost(body, token, postId);
       }
     } catch (error) {
       console.log(error);

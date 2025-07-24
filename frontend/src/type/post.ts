@@ -21,7 +21,7 @@ export interface IPost {
 export interface IPostRequest {
   id?: string;
   status: "published" | "draft";
-  author: string;
+  author?: string;
   created_at?: string; // ISO timestamp
   updated_at?: string | null;
   title: string;

@@ -14,7 +14,15 @@ if (!token) {
   return Astro.redirect("/login");
 }
 
-const post = await directus.request(readItem("posts", id ?? ""));
+let post: IPost | null = null;
+
+if (id !== "new") {
+  post = await directus.request(readItem("posts", id ?? "")) as IPost
+  if (post.status === "published") {
+	return Astro.redirect("/dashboard")
+  }
+}
+
 ---
 
 <html lang="en">
