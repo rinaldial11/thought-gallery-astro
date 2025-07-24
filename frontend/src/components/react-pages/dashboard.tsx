@@ -40,7 +40,8 @@ function DashboardPage({ user, token }: { user: DirectusUser; token: string }) {
     debouncetitle,
     createdBy,
     user.id,
-    token
+    token,
+    page
   );
   const { publicPosts } = useGetPublicPosts(
     filter,
@@ -161,6 +162,29 @@ function DashboardPage({ user, token }: { user: DirectusUser; token: string }) {
                     })}
                   </div>
                 )}
+                {posts.length > 0 && (
+                  <div className="w-full flex justify-center gap-4 mt-4">
+                    <Button
+                      variant="outline"
+                      onClick={() => setPage((p) => Math.max(p - 1, 1))}
+                      disabled={page === 1}
+                    >
+                      Previous
+                    </Button>
+                    <span className="text-sm text-gray-500 self-center">
+                      Page {page}
+                    </span>
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        if (publicPosts?.length === 8) setPage((p) => p + 1);
+                      }}
+                      disabled={publicPosts?.length < 8}
+                    >
+                      Next
+                    </Button>
+                  </div>
+                )}
               </div>
             </TabsContent>
             <TabsContent value="published">
@@ -223,14 +247,7 @@ function DashboardPage({ user, token }: { user: DirectusUser; token: string }) {
                               dangerouslySetInnerHTML={{
                                 __html: contentBody ?? "",
                               }}
-                            >
-                              {/* {post.body.split(" ").length > 10
-                                ? `${post.body
-                                    .split(" ")
-                                    .slice(0, 10)
-                                    .join(" ")} ...`
-                                : post.body} */}
-                            </p>
+                            ></p>
                           </CardContent>
                           <CardFooter>
                             <Button
@@ -247,27 +264,29 @@ function DashboardPage({ user, token }: { user: DirectusUser; token: string }) {
                     })}
                   </div>
                 )}
-                <div className="w-full flex justify-center gap-4 mt-4">
-                  <Button
-                    variant="outline"
-                    onClick={() => setPage((p) => Math.max(p - 1, 1))}
-                    disabled={page === 1}
-                  >
-                    Previous
-                  </Button>
-                  <span className="text-sm text-gray-500 self-center">
-                    Page {page}
-                  </span>
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      if (publicPosts?.length === 8) setPage((p) => p + 1);
-                    }}
-                    disabled={publicPosts?.length < 8}
-                  >
-                    Next
-                  </Button>
-                </div>
+                {publicPosts.length > 0 && (
+                  <div className="w-full flex justify-center gap-4 mt-4">
+                    <Button
+                      variant="outline"
+                      onClick={() => setPage((p) => Math.max(p - 1, 1))}
+                      disabled={page === 1}
+                    >
+                      Previous
+                    </Button>
+                    <span className="text-sm text-gray-500 self-center">
+                      Page {page}
+                    </span>
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        if (publicPosts?.length === 8) setPage((p) => p + 1);
+                      }}
+                      disabled={publicPosts?.length < 8}
+                    >
+                      Next
+                    </Button>
+                  </div>
+                )}
               </div>
             </TabsContent>
           </Tabs>

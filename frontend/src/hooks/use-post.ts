@@ -17,7 +17,8 @@ export const useGetPosts = (
   title: string,
   createdBy: boolean,
   userId: string,
-  token: string
+  token: string,
+  page: number
 ) => {
   // const [token] = useAtom(tokenAtom);
   const [posts, setPosts] = useState<IPost[]>([]);
@@ -33,7 +34,8 @@ export const useGetPosts = (
           token ?? tokenStorage,
           title,
           createdBy,
-          userId
+          userId,
+          page
         );
         setPosts(data ?? []);
       } catch (err) {
