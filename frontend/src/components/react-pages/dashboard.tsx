@@ -33,6 +33,7 @@ function DashboardPage({ user, token }: { user: DirectusUser; token: string }) {
   const [, setToken] = useAtom(directusTokenAtom);
   const [title, setTitle] = useState("");
   const [createdBy, setCreatedBy] = useState(false);
+  const [page, setPage] = useState(1);
   const debouncetitle = useDebounce(title, 500);
   const { posts } = useGetPosts(
     filter,
@@ -45,13 +46,18 @@ function DashboardPage({ user, token }: { user: DirectusUser; token: string }) {
     filter,
     debouncetitle,
     createdBy,
-    user.id
+    user.id,
+    page
   );
 
   useEffect(() => {
     setUser(user);
     setToken(token);
   }, []);
+
+  useEffect(() => {
+    setPage(1);
+  }, [debouncetitle, createdBy]);
 
   return (
     <SidebarProvider>
@@ -241,6 +247,27 @@ function DashboardPage({ user, token }: { user: DirectusUser; token: string }) {
                     })}
                   </div>
                 )}
+                <div className="w-full flex justify-center gap-4 mt-4">
+                  <Button
+                    variant="outline"
+                    onClick={() => setPage((p) => Math.max(p - 1, 1))}
+                    disabled={page === 1}
+                  >
+                    Previous
+                  </Button>
+                  <span className="text-sm text-gray-500 self-center">
+                    Page {page}
+                  </span>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      if (publicPosts?.length === 8) setPage((p) => p + 1);
+                    }}
+                    disabled={publicPosts?.length < 8}
+                  >
+                    Next
+                  </Button>
+                </div>
               </div>
             </TabsContent>
           </Tabs>

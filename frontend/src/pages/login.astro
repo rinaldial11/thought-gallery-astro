@@ -2,6 +2,12 @@
 import { LoginForm } from "@/components/login-form";
 import BaseLayout from "@/layouts/base-layout.astro";
 import "@/styles/global.css";
+
+const token = Astro.cookies.get("directus_session_token")?.value
+
+if (token) {
+  return Astro.redirect("/dashboard")
+}
 ---
 
 <html lang="en">

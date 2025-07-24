@@ -53,7 +53,8 @@ export const useGetPublicPosts = (
   status: "published" | "draft" = "published",
   title: string,
   createdBy: boolean,
-  userId: string
+  userId: string,
+  page: number
 ) => {
   const [publicPosts, setPublicPosts] = useState<IPost[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -62,7 +63,13 @@ export const useGetPublicPosts = (
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const posts = await getPublicPost(status, title, createdBy, userId);
+        const posts = await getPublicPost(
+          status,
+          title,
+          createdBy,
+          userId,
+          page
+        );
         setPublicPosts(posts ?? []);
       } catch (err) {
         setError(err as Error);
@@ -72,7 +79,7 @@ export const useGetPublicPosts = (
     };
 
     fetchData();
-  }, [status, title, createdBy, userId]);
+  }, [status, title, createdBy, userId, page]);
 
   return { publicPosts, isLoading, error };
 };

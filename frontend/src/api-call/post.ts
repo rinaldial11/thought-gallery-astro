@@ -47,7 +47,9 @@ export const getPublicPost = async (
   status: "published" | "draft" = "published",
   title: string,
   createdBy: boolean,
-  userId: string
+  userId: string,
+  page: number,
+  limit: number = 8
 ) => {
   try {
     if (status === "published") {
@@ -65,11 +67,15 @@ export const getPublicPost = async (
         filter.author = { _eq: userId };
       }
 
+      const offset = (page - 1) * limit;
+
       const res = await axiosInstance.get(
         "/items/posts?fields=*,author.first_name,author.last_name,author.email",
         {
           params: {
             filter,
+            limit,
+            offset,
           },
         }
       );
