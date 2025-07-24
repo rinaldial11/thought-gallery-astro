@@ -116,6 +116,12 @@ function Navbar() {
             >
               Apply
             </a>
+            <a
+              href="/login"
+              className="bg-white text-blue-600 px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors border border-blue-600"
+            >
+              Login
+            </a>
           </div>
           {/* Mobile menu buthrefn */}
           <div className="md:hidden">
