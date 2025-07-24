@@ -1,0 +1,180 @@
+---
+import Navbar from '../components/navbar.tsx';
+import Footer from '../components/footer.astro';
+import '../styles/global.css';
+import { directus } from '@/lib/directus-instance';
+import { readItems } from '@directus/sdk';
+
+
+const posts = await directus.request(
+  readItems("posts", {
+    filter: {
+      status: {
+        _eq: "published",
+      }
+    },
+    fields: ["slug", "title", 'body'],
+    limit: 1
+  })
+);
+
+
+const galleryImages = [
+    {
+      category: "Classroom",
+      title: "Ruang Kelas Modern",
+      image:
+        "https://images.unsplash.com/photo-1573497619860-6d82917e4ec8?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1ODF8MHwxfHNlYXJjaHwxfHx0cmFpbmluZyUyMGNsYXNzcm9vbXxlbnwwfHx8Ymx1ZXwxNzUzMDI3OTY2fDA&ixlib=rb-4.1.0&q=85",
+    },
+    {
+      category: "Training",
+      title: "Pelatihan Bahasa Jepang",
+      image:
+        "https://images.unsplash.com/photo-1573497619860-6d82917e4ec8?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1ODF8MHwxfHNlYXJjaHwxfHx0cmFpbmluZyUyMGNsYXNzcm9vbXxlbnwwfHx8Ymx1ZXwxNzUzMDI3OTY2fDA&ixlib=rb-4.1.0&q=85",
+    },
+    {
+      category: "Students",
+      title: "Peserta Program Student",
+      image:
+        "https://images.unsplash.com/photo-1573496130103-a442a3754d0e?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2Nzd8MHwxfHNlYXJjaHwxfHxidXNpbmVzcyUyMHByb2Zlc3Npb25hbHN8ZW58MHx8fGJsdWV8MTc1MzAyNzk1OXww&ixlib=rb-4.1.0&q=85",
+    },
+    {
+      category: "Professional",
+      title: "Program Professional",
+      image:
+        "https://images.unsplash.com/photo-1581093059756-acf6718c0ab1?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDF8MHwxfHNlYXJjaHwyfHxlbmdpbmVlcmluZyUyMHdvcmtlcnN8ZW58MHx8fGJsdWV8MTc1MzAyNzk4MXww&ixlib=rb-4.1.0&q=85",
+    },
+    {
+      category: "Healthcare",
+      title: "Program Kesehatan",
+      image:
+        "https://images.unsplash.com/photo-1536064479547-7ee40b74b807?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzR8MHwxfHNlYXJjaHwxfHxoZWFsdGhjYXJlJTIwd29ya2Vyc3xlbnwwfHx8Ymx1ZXwxNzUzMDI3OTczfDA&ixlib=rb-4.1.0&q=85",
+    },
+    {
+      category: "Construction",
+      title: "Program Konstruksi",
+      image:
+        "https://images.unsplash.com/photo-1614127938540-a1139bee1841?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2MzR8MHwxfHNlYXJjaHwyfHxjb25zdHJ1Y3Rpb24lMjB3b3JrZXJzfGVufDB8fHxibHVlfDE3NTMwMjc5ODh8MA&ixlib=rb-4.1.0&q=85",
+    },
+    {
+      category: "Restaurant",
+      title: "Program Restoran",
+      image:
+        "https://images.unsplash.com/photo-1659354220856-481085fa9585?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2MzR8MHwxfHNlYXJjaHwyfHxyZXN0YXVyYW50JTIwd29ya2Vyc3xlbnwwfHx8Ymx1ZXwxNzUzMDI3OTk1fDA&ixlib=rb-4.1.0&q=85",
+    },
+    {
+      category: "Agriculture",
+      title: "Program Pertanian",
+      image:
+        "https://images.unsplash.com/photo-1604135849192-b08f647aace7?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1ODF8MHwxfHNlYXJjaHwxfHxhZ3JpY3VsdHVyZSUyMHdvcmtlcnN8ZW58MHx8fGJsdWV8MTc1MzAyODAwM3ww&ixlib=rb-4.1.0&q=85",
+    },
+    {
+      category: "Manufacturing",
+      title: "Program Manufaktur",
+      image:
+        "https://images.unsplash.com/photo-1718017670264-4d0497f8ac35?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1ODF8MHwxfHNlYXJjaHwzfHxhZ3JpY3VsdHVyZSUyMHdvcmtlcnN8ZW58MHx8fGJsdWV8MTc1MzAyODAwM3ww&ixlib=rb-4.1.0&q=85",
+    },
+  ];
+
+  const updatedGalleryImages = galleryImages.map((item) => {
+  const matchedPost = posts.find(
+    (post) => post.slug.toLowerCase() === item.category.toLowerCase()
+  );
+
+  return {
+    ...item,
+    title: matchedPost?.title ?? item.title,
+  };
+});
+
+  const filteredImages = updatedGalleryImages
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>GALLERY MUGEN (Yukari)</title>
+		<meta name="description" content="Gallery MUGEN (Yukari) adalah platform pembelajaran modern dengan 1000+ peserta dan 95% tingkat keberhasilan." />
+		<meta property="og:title" content="Gallery MUGEN (Yukari)" />
+  		<meta property="og:description" content="Bergabunglah bersama 1000+ peserta di platform Yukari, dirancang untuk meningkatkan potensi Anda." />
+	</head>
+	<body>
+		<Navbar client:load />
+		<div>
+      {/* Hero Section */}
+      <section class="bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 text-white py-20">
+        <div class="container mx-auto px-6 text-center py-20">
+          <h1 class="text-5xl md:text-6xl font-bold mb-6">Gallery</h1>
+          <p class="text-xl md:text-2xl text-blue-100 max-w-3xl mx-auto">
+            Lihat kegiatan dan fasilitas MUGEN Indonesia dalam mendukung
+            perjalanan karier Anda ke Jepang
+          </p>
+        </div>
+      </section>
+
+      {/* Gallery Content */}
+      <section class="py-20 bg-gray-50">
+        <div class="container mx-auto px-6">
+
+          {/* Gallery Grid */}
+          <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-8">
+            {filteredImages.map((item: any) => (
+              <div
+                class="group flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 gap-4 justify-between"
+              >
+                {/* IMAGE SECTION */}
+                <div class="relative w-full h-1/2 aspect-[4/3] overflow-hidden">
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  />
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div class="absolute top-4 right-4">
+                    <span class="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                      {item.category}
+                    </span>
+                  </div>
+                </div>
+
+                {/* TEXT SECTION */}
+                <div class="p-4 flex flex-col flex-grow">
+                  <h3 class="text-xl font-semibold text-gray-900 mb-2">
+                    {item.title}
+                  </h3>
+                  <p class="text-gray-600 text-sm leading-relaxed">
+                    Dokumentasi kegiatan dan fasilitas program{" "}
+                    {item.category.toLowerCase()} di MUGEN Indonesia.
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section class="py-20 bg-blue-600 text-white">
+        <div class="container mx-auto px-6 text-center">
+          <h2 class="text-4xl font-bold mb-6">
+            Ingin Menjadi Bagian dari Kami?
+          </h2>
+          <p class="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+            Bergabunglah dengan ribuan peserta yang telah sukses berkarir di
+            Jepang
+          </p>
+          <a
+            href="/apply"
+            class="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold hover:bg-blue-50 transition-all shadow-lg"
+          >
+            Daftar Sekarang
+          </a>
+        </div>
+      </section>
+    </div>
+		<Footer client:load />
+	</body>
+</html>

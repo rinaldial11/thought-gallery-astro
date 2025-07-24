@@ -20,3 +20,7 @@ import { authentication, createDirectus, rest } from "@directus/sdk";
 export const directus = createDirectus(DIRECTUS_URL)
   .with(rest())
   .with(authentication("cookie", { credentials: "include" }));
+
+export const directusJson = createDirectus(DIRECTUS_URL)
+  .with(rest())
+  .with(authentication("json"));
