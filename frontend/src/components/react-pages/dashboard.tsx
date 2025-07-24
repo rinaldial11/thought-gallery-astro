@@ -26,6 +26,7 @@ import { Label } from "../ui/label";
 import { marked } from "marked";
 import type { DirectusUser } from "@/type/user";
 import { directusTokenAtom } from "@/store/token";
+import { SkeletonCard } from "../ui/skeleton-card";
 
 function DashboardPage({ user, token }: { user: DirectusUser; token: string }) {
   const [filter, setFilter] = useState<"published" | "draft">("published");
@@ -35,7 +36,7 @@ function DashboardPage({ user, token }: { user: DirectusUser; token: string }) {
   const [createdBy, setCreatedBy] = useState(false);
   const [page, setPage] = useState(1);
   const debouncetitle = useDebounce(title, 500);
-  const { posts } = useGetPosts(
+  const { posts, loading: draftLoading } = useGetPosts(
     filter,
     debouncetitle,
     createdBy,
@@ -43,7 +44,7 @@ function DashboardPage({ user, token }: { user: DirectusUser; token: string }) {
     token,
     page
   );
-  const { publicPosts } = useGetPublicPosts(
+  const { publicPosts, isLoading } = useGetPublicPosts(
     filter,
     debouncetitle,
     createdBy,
@@ -98,6 +99,13 @@ function DashboardPage({ user, token }: { user: DirectusUser; token: string }) {
                     </div>
                   </div>
                 </div>
+                {draftLoading && (
+                  <div className="flex gap-4 flex-wrap">
+                    {Array.from({ length: 8 }).map((_, index) => (
+                      <SkeletonCard key={index} />
+                    ))}
+                  </div>
+                )}
                 {posts?.length === 0 || posts === undefined ? (
                   <div className="w-full h-130 flex justify-center items-center">
                     <div className="text-gray-400 text-xl font-semibold">
@@ -209,6 +217,13 @@ function DashboardPage({ user, token }: { user: DirectusUser; token: string }) {
                     </div>
                   </div>
                 </div>
+                {isLoading && (
+                  <div className="flex gap-4 flex-wrap">
+                    {Array.from({ length: 8 }).map((_, index) => (
+                      <SkeletonCard key={index} />
+                    ))}
+                  </div>
+                )}
                 {publicPosts?.length === 0 || publicPosts === undefined ? (
                   <div className="w-full h-130 flex justify-center items-center">
                     <div className="text-gray-400 text-xl font-semibold">
