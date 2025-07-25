@@ -3,6 +3,11 @@ import Navbar from '../components/navbar.tsx';
 import Footer from '../components/footer.astro';
 import '../styles/global.css';
 import ContactComponent from '@/components/contact-comp';
+import { directus } from '@/lib/directus-instance';
+import { readSingleton } from '@directus/sdk';
+
+const global = await directus.request(readSingleton("global"))
+
 ---
 
 <html lang="en">
@@ -11,10 +16,8 @@ import ContactComponent from '@/components/contact-comp';
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
-		<title>GALLERY MUGEN (Yukari)</title>
-		<meta name="description" content="Gallery MUGEN (Yukari) adalah platform pembelajaran modern dengan 1000+ peserta dan 95% tingkat keberhasilan." />
-		<meta property="og:title" content="Gallery MUGEN (Yukari)" />
-  		<meta property="og:description" content="Bergabunglah bersama 1000+ peserta di platform Yukari, dirancang untuk meningkatkan potensi Anda." />
+		<title>{global.title}</title>
+		<meta name="description" content={global.description} />
 	</head>
 	<body>
 		<Navbar client:load />

@@ -3,8 +3,25 @@ import Navbar from '../components/navbar.tsx';
 import Footer from '../components/footer.astro';
 import '../styles/global.css';
 import AboutCard from '@/components/about-card.astro';
----
+import { directus } from '@/lib/directus-instance';
+import { readItems, readSingleton } from '@directus/sdk';
 
+const posts = await directus.request(
+  readItems("posts", {
+    filter: {
+      category: {
+        _eq: "about us",
+      },
+      status: {
+        _eq: "published",
+      }
+    },
+    fields: ["slug"],
+  })
+);
+const global = await directus.request(readSingleton("global"))
+
+---
 
 <html lang="en">
 	<head>
@@ -12,10 +29,8 @@ import AboutCard from '@/components/about-card.astro';
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
-		<title>ABOUT MUGEN (Yukari)</title>
-		<meta name="description" content="ABOUT MUGEN (Yukari) adalah platform pembelajaran modern dengan 1000+ peserta dan 95% tingkat keberhasilan." />
-		<meta property="og:title" content="ABOUT MUGEN (Yukari)" />
-  		<meta property="og:description" content="Bergabunglah bersama 1000+ peserta di platform Yukari, dirancang untuk meningkatkan potensi Anda." />
+		<title>{global.title}</title>
+		<meta name="description" content={global.description} />
 	</head>
 	<body>
 		<Navbar client:load />
@@ -25,7 +40,7 @@ import AboutCard from '@/components/about-card.astro';
         <div class="mx-auto py-20">
           <h1 class="text-5xl md:text-6xl font-bold mb-6">Tentang Kami</h1>
           <p class="text-xl md:text-2xl text-blue-100 max-w-3xl mx-auto">
-            PT. Multi Generasi Indonesia berkomitmen membuka peluang karier
+            PT. Yukari berkomitmen membuka peluang karier
             tanpa batas bagi generasi Indonesia untuk berkembang dan berkarir di
             Jepang.
           </p>
@@ -97,11 +112,13 @@ import AboutCard from '@/components/about-card.astro';
             </div>
           </div>
           {/* Nilai-nilai Perusahaan */}
-          <div class="grid md:grid-cols-3 gap-8 mb-20">
-            <AboutCard slug="kualitas" />
-            <AboutCard slug="kepercayaan" />
-            <AboutCard slug="inovasi" />
-          {/* Perizinan */}
+          <div class="flex flex-col gap-8 mb-20">
+            <div class="flex gap-4">
+            {posts.map((post) => (
+            <AboutCard slug={post.slug} />
+            ))}
+            </div>
+          <div class="w-full">
           <div class="bg-white rounded-2xl p-8 shadow-lg">
             <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">
               Perizinan Resmi
@@ -128,6 +145,7 @@ import AboutCard from '@/components/about-card.astro';
                   <p class="text-gray-700 leading-relaxed">{permit}</p>
                 </div>
               ))}
+              </div>
             </div>
           </div>
         </div>

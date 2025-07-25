@@ -6,9 +6,8 @@ function AboutPage() {
         <div className="container mx-auto py-20">
           <h1 className="text-5xl md:text-6xl font-bold mb-6">Tentang Kami</h1>
           <p className="text-xl md:text-2xl text-blue-100 max-w-3xl mx-auto">
-            PT. Multi Generasi Indonesia berkomitmen membuka peluang karier
-            tanpa batas bagi generasi Indonesia untuk berkembang dan berkarir di
-            Jepang.
+            PT. Yukari berkomitmen membuka peluang karier tanpa batas bagi
+            generasi Indonesia untuk berkembang dan berkarir di Jepang.
           </p>
         </div>
       </section>

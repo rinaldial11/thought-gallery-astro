@@ -3,6 +3,24 @@ import Navbar from "@/components/navbar.tsx";
 import ProgramsPage from "@/components/react-pages/programs";
 import Footer from '../../components/footer.astro';
 import '../../styles/global.css';
+import { directus } from "@/lib/directus-instance";
+import { readItems, readSingleton } from "@directus/sdk";
+
+const posts = await directus.request(
+  readItems("posts", {
+    filter: {
+      status: {
+        _eq: "published",
+      },
+      category: {
+        _eq: "programs"
+      }
+    },
+    fields: ["slug", "title", 'body', "image", "category"],
+  })
+);
+const global = await directus.request(readSingleton("global"))
+
 ---
 
 <html lang="en">
@@ -11,14 +29,12 @@ import '../../styles/global.css';
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
-		<title>PROGRAM MUGEN (Yukari)</title>
-		<meta name="description" content="Program MUGEN (Yukari) adalah platform pembelajaran modern dengan 1000+ peserta dan 95% tingkat keberhasilan." />
-		<meta property="og:title" content="Program MUGEN (Yukari)" />
-  		<meta property="og:description" content="Bergabunglah bersama 1000+ peserta di platform Yukari, dirancang untuk meningkatkan potensi Anda." />
+		<title>{global.title}</title>
+		<meta name="description" content={global.description} />
 	</head>
 	<body>
 		<Navbar client:load />
-        <ProgramsPage client:load />
+        <ProgramsPage programs={posts} client:load />
         <Footer client:load />
 	</body>
 </html>

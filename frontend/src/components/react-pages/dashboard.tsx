@@ -185,9 +185,9 @@ function DashboardPage({ user, token }: { user: DirectusUser; token: string }) {
                     <Button
                       variant="outline"
                       onClick={() => {
-                        if (publicPosts?.length === 8) setPage((p) => p + 1);
+                        if (publicPosts?.length === 10) setPage((p) => p + 1);
                       }}
-                      disabled={publicPosts?.length < 8}
+                      disabled={publicPosts?.length < 10}
                     >
                       Next
                     </Button>
@@ -294,9 +294,9 @@ function DashboardPage({ user, token }: { user: DirectusUser; token: string }) {
                     <Button
                       variant="outline"
                       onClick={() => {
-                        if (publicPosts?.length === 8) setPage((p) => p + 1);
+                        if (publicPosts?.length === 10) setPage((p) => p + 1);
                       }}
-                      disabled={publicPosts?.length < 8}
+                      disabled={publicPosts?.length < 10}
                     >
                       Next
                     </Button>

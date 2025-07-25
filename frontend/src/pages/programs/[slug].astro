@@ -1,34 +1,96 @@
 ---
 import Navbar from "../../components/navbar.tsx";
-import ProgramDetails from "../../components/react-pages/program-details"
-import Footer from '../../components/footer.astro';
-import '../../styles/global.css';
-export function getStaticPaths() {
-  return [
-    { params: { slug: "student" }},
-    { params: { slug: "internship" }},
-    { params: { slug: "professional" }},
-    { params: { slug: "kerja-magang" }},
-    { params: { slug: "ssw" }}
-  ]
+import ProgramDetails from "../../components/react-pages/program-details";
+import Footer from "../../components/footer.astro";
+import "../../styles/global.css";
+import { directus } from "@/lib/directus-instance";
+import { readItems, readSingleton } from "@directus/sdk";
+
+// Generate static paths (build time)
+export async function getStaticPaths() {
+  const posts = await directus.request(
+    readItems("posts", {
+      filter: {
+        status: { _eq: "published" },
+        category: { _eq: "programs" },
+      },
+      fields: ["slug"],
+    })
+  );
+
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+  }));
 }
+
+// Get slug from URL
 const { slug } = Astro.params;
+
+// Fetch the specific post data
+const posts = await directus.request(
+  readItems("posts", {
+    filter: {
+      slug: { _eq: slug },
+    },
+    fields: ["title", "slug", "body", "image", "status", "category"], // sesuaikan field-nya
+  })
+);
+
+const pros = await directus.request(
+  readItems("posts", {
+    filter: {
+      category: { _eq: slug },
+    },
+    fields: ["title", "slug", "body", "image", "status", "category"], // sesuaikan field-nya
+  })
+);
+
+const kurikulum = await directus.request(
+  readItems("kurikulum", {
+    filter: {
+      category: { _eq: slug },
+    },
+    fields: ["title", "body", "durasi", "notes"], // sesuaikan field-nya
+  })
+);
+
+const persyaratan = await directus.request(
+  readItems("persyaratan", {
+    filter: {
+      category: { _eq: slug },
+    },
+    fields: ["title", "body"], // sesuaikan field-nya
+  })
+);
+
+const features = await directus.request(
+  readItems("feature", {
+    filter: {
+      category: { _eq: slug },
+    },
+    fields: ["body"], // sesuaikan field-nya
+  })
+);
+
+// Get the global settings
+const global = await directus.request(readSingleton("global"));
+
+// Ambil post pertama (karena hasilnya array)
+const post = posts[0];
 ---
 
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>PROGRAM MUGEN (Yukari)</title>
-		<meta name="description" content="Program MUGEN (Yukari) adalah platform pembelajaran modern dengan 1000+ peserta dan 95% tingkat keberhasilan." />
-		<meta property="og:title" content="Program MUGEN (Yukari)" />
-  		<meta property="og:description" content="Bergabunglah bersama 1000+ peserta di platform Yukari, dirancang untuk meningkatkan potensi Anda." />
-	</head>
-	<body>
-		<Navbar client:load />
-        <ProgramDetails slug={slug} client:load />
-        <Footer client:load />
-	</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{global.title}</title>
+    <meta name="description" content={global.description} />
+  </head>
+  <body>
+    <Navbar client:load />
+    <ProgramDetails features={features} persyaratan={persyaratan} kurikulum={kurikulum} pros={pros} post={post} slug={slug} client:load />
+    <Footer client:load />
+  </body>
 </html>

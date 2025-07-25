@@ -28,6 +28,7 @@
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "@uiw/react-md-editor": "^4.0.8",
+    "aos": "^2.3.4",
     "astro": "^5.12.0",
     "axios": "^1.10.0",
     "canvas-confetti": "^1.9.3",

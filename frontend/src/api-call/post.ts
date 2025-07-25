@@ -9,7 +9,7 @@ export const getPosts = async (
   createdBy: boolean,
   userId: string,
   page: number,
-  limit: number = 8
+  limit: number = 10
 ) => {
   try {
     if (status === "draft") {
@@ -54,7 +54,7 @@ export const getPublicPost = async (
   createdBy: boolean,
   userId: string,
   page: number,
-  limit: number = 8
+  limit: number = 10
 ) => {
   try {
     if (status === "published") {

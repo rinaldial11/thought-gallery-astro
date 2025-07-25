@@ -1,10 +1,14 @@
+---
+import yukariLogo from "../assets/icon/yukari-logo.png"
+---
+
 <footer class="bg-gray-900 text-white py-16">
       <div class="container mx-auto px-6">
         <div class="grid md:grid-cols-4 gap-8 mb-12">
           {/* Company Info */}
           <div class="md:col-span-2">
-            <a href="/" class="flex items-center space-x-3 mb-6">
-              <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center">
+            <a href="/" class="flex items-center mb-6">
+              <!-- <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center">
                 <svg
                   class="w-8 h-8 text-white"
                   fill="currentColor"
@@ -12,14 +16,15 @@
                 >
                   <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
                 </svg>
-              </div>
+              </div> -->
+              <img src={yukariLogo.src} alt="yukari" class="w-15">
               <div>
-                <h3 class="text-2xl font-bold text-white">MUGEN</h3>
-                <p class="text-gray-400">INDONESIA</p>
+                <h3 class="text-2xl font-bold text-white">Yukari</h3>
+                <!-- <p class="text-gray-400">INDONESIA</p> -->
               </div>
             </a>
             <p class="text-gray-300 leading-relaxed mb-6">
-              PT. Multi Generasi Indonesia berkomitmen membuka peluang karier
+              PT. Yukari berkomitmen membuka peluang karier
               tanpa batas bagi generasi Indonesia untuk berkembang dan berkarir
               di Jepang.
             </p>
@@ -110,7 +115,7 @@
               </div>
               <div class="flex items-center space-x-3">
                 <span class="text-blue-400">✉️</span>
-                <p class="text-gray-300">info@mugenindonesia.com</p>
+                <p class="text-gray-300">info@yukari.com</p>
               </div>
             </div>
           </div>
@@ -120,7 +125,7 @@
         <div class="border-t border-gray-800 pt-8">
           <div class="flex flex-col md:flex-row justify-between items-center">
             <p class="text-gray-400 text-sm">
-              © 2024 PT. Multi Generasi Indonesia. All rights reserved.
+              © 2024 PT. Yukari. All rights reserved.
             </p>
             <div class="flex space-x-6 mt-4 md:mt-0">
               <a

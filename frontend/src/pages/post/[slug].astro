@@ -3,7 +3,7 @@ import type { IPost } from '@/type/post';
 import '../../styles/global.css';
 import { marked } from "marked";
 import { directus } from "@/lib/directus-instance";
-import { readItems } from '@directus/sdk';
+import { readItems, readSingleton } from '@directus/sdk';
 // import { remark } from 'remark';
 // import remarkHtml from 'remark-html';
 
@@ -82,24 +82,19 @@ function formatDate(dateString?: string): string {
 }
 
 const content = marked(post?.body ?? "");
+const global = await directus.request(readSingleton("global"))
+
 ---
 
-<!DOCTYPE html>
-<html lang="id">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{post?.seo_title || post?.title || 'Post Not Found'}</title>
-    <meta name="description" content={post?.seo_desc || ""} />
-    <meta name="author" content={`${post?.author?.first_name} ${post?.author?.last_name}`} />
-    {post?.created_at && <meta name="article:published_time" content={post.created_at} />}
-    {post?.updated_at && <meta name="article:modified_time" content={post.updated_at} />}
-    
-    <!-- Open Graph -->
-    <meta property="og:type" content="article" />
-    <meta property="og:title" content={post?.seo_title || post?.title} />
-    <meta property="og:description" content={post?.seo_desc} />
-  </head>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{global.title}</title>
+		<meta name="description" content={global.description} />
+	</head>
   <body class="bg-gray-50 min-h-screen">
     <div class="max-w-4xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
       <button onclick="window.history.back()" class="inline-flex items-center gap-2 text-gray-600 hover:text-gray-700 text-sm font-medium mb-8 transition-colors">

@@ -27,7 +27,7 @@ const firstSentence = post?.body?.split("-Bimbingan")[0]?.trim() || "";
 const content = marked(firstSentence);
 ---
 
-<div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden">
+<div data-aos="fade-up" class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden">
   <img
     src={image}
     alt={post?.title}
@@ -39,7 +39,7 @@ const content = marked(firstSentence);
     </h3>
       <div class="text-gray-600 mb-6 prose-custom" set:html={content} />
     <a
-      href={`/post/${post.slug}`}
+      href={`/programs/${slug}`}
       class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
     >
       Pelajari →

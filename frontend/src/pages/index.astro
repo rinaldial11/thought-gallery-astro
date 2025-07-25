@@ -1,17 +1,35 @@
 ---
 import '../styles/global.css';
 import { directus } from '@/lib/directus-instance';
-import { readSingleton} from "@directus/sdk"
-import { Building2, Clock, TrendingUp, User } from '@lucide/astro';
-import Navbar from '../components/navbar';
+import { readItems, readSingleton} from "@directus/sdk"
+import { Building2, Clock, HardHat, HeartPulse, Tractor, TrendingUp, User } from '@lucide/astro';
+import Navbar from '@/components/navbar';
 import ProgramCard from '@/components/program-card.astro';
 import Footer from '@/components/footer.astro';
 import landingImg from "../assets/landing-img.png";
-import studentImg from "../assets/student-program.png";
-import profImg from "../assets/professional-program.png";
-import sswImg from "../assets/ssw-program.png";
+// import studentImg from "../assets/student-program.png";
+// import profImg from "../assets/professional-program.png";
+// import sswImg from "../assets/ssw-program.png";
+import BaseLayout from '@/layouts/base-layout.astro';
+import { Factory } from 'lucide-react';
+
+const posts = await directus.request(
+  readItems("posts", {
+    filter: {
+      category: {
+        _eq: "programs",
+      },
+      status: {
+        _eq: "published",
+      }
+    },
+    fields: ["slug", "title", "image"],
+    limit: 3
+  })
+);
 
 const global = await directus.request(readSingleton("global"))
+
 ---
 
 <html lang="en">
@@ -23,15 +41,16 @@ const global = await directus.request(readSingleton("global"))
 		<title>{global.title}</title>
 		<meta name="description" content={global.description} />
 	</head>
+  <BaseLayout>
 	<body>
-		<Navbar />
+		<Navbar client:load />
 		<section class="bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 text-white py-16">
         <div class="container mx-auto px-6 py-16">
           <div class="grid md:grid-cols-2 gap-12 items-center">
             <div>
               <h1 class="text-5xl md:text-6xl font-bold mb-6 leading-tight">
-                PT. MULTI GENERASI
-                <span class="block text-blue-200">INDONESIA</span>
+                PT. Yukari
+                <!-- <span class="block text-blue-200">INDONESIA</span> -->
               </h1>
               <p class="text-xl md:text-2xl mb-4 text-blue-100">
                 マルチ ジェネラシ インドネシア (株式会社)
@@ -52,7 +71,7 @@ const global = await directus.request(readSingleton("global"))
           </div>
 
           {/* Stats Section */}
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mt-16 pt-16 border-t border-blue-500">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mt-16 pt-16">
             <div class="text-center">
               <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
                 <User class='text-blue-500' />
@@ -62,13 +81,6 @@ const global = await directus.request(readSingleton("global"))
             </div>
             <div class="text-center">
               <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
-                {/* <svg
-                  class="w-8 h-8"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                </svg> */}
                 <TrendingUp class='text-blue-500' />
               </div>
               <h3 class="text-2xl font-bold">95%</h3>
@@ -91,6 +103,7 @@ const global = await directus.request(readSingleton("global"))
           </div>
         </div>
       </section>
+      
       <section class="py-20 bg-gray-50">
         <div class="container mx-auto px-6">
           <div class="text-center mb-16">
@@ -102,23 +115,57 @@ const global = await directus.request(readSingleton("global"))
               berkarir di Jepang
             </p>
           </div>
-
+          
           <div class="grid md:grid-cols-3 gap-8 mb-12">
-			<ProgramCard
-    			image={studentImg.src}
-    			slug="student-program"
-  			/>
-			<ProgramCard
-    			image={profImg.src}
-    			slug="professional"
-  			/>
-			<ProgramCard
-    			image={sswImg.src}
-    			slug="ssw-program"
-  			/>
+            {
+              posts.map((post) => (
+                <ProgramCard
+                  image={post.image}
+                  slug={post.slug}
+                  title={post.title}
+                />
+              ))
+}
           </div>
         </div>
-      </section>
+      </section>      
+      <section class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+          <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+              Bidang <span class="text-blue-600">Pekerjaan</span> di Jepang
+            </h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+              Berikut adalah beberapa bidang karier populer yang tersedia bagi peserta program kami.
+            </p>
+          </div>
+          <div class="overflow-hidden relative">
+            <div class="flex whitespace-nowrap gap-16">
+              {[...Array(4)].map(() => (
+                <>
+                  <div data-aos="zoom-out-right" class="text-center min-w-[200px] flex flex-col items-center justify-between gap-4">
+                    <Factory size={48} />
+                    <h3 class="text-lg font-semibold text-gray-800">Pabrik Manufaktur</h3>
+                  </div>
+                  <div data-aos="zoom-out-right" class="text-center min-w-[200px] flex flex-col items-center justify-between gap-4">
+                    <HeartPulse size={48} />
+                    <h3 class="text-lg font-semibold text-gray-800">Caregiver / Perawat</h3>
+                  </div>
+                  <div data-aos="zoom-out-left" class="text-center min-w-[200px] flex flex-col items-center justify-between gap-4">
+                    <Tractor size={48} />
+                    <h3 class="text-lg font-semibold text-gray-800">Pertanian</h3>
+                  </div>
+                  <div data-aos="zoom-out-left" class="text-center min-w-[200px] flex flex-col items-center justify-between gap-4">
+                    <HardHat size={48} />
+                    <h3 class="text-lg font-semibold text-gray-800">Konstruksi</h3>
+                  </div>
+                </>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>      
 	  <Footer />
 	</body>
+  </BaseLayout>
 </html>
